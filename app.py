@@ -6,7 +6,7 @@ app = Flask(__name__, static_folder="static", template_folder="templates")
 #yarb
 # Set secret key for session
 app.secret_key = "your_secret_key"
-
+#test
 # Initialize database
 def init_db():
     with sqlite3.connect("users.db") as conn:
