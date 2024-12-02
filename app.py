@@ -3,7 +3,7 @@ import sqlite3
 import os
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
-
+#yarb
 # Set secret key for session
 app.secret_key = "your_secret_key"
 
