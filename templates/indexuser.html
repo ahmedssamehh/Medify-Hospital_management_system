@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medify - User Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../static/css/custom.css">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
+        <div class="container">
+            <a class="navbar-brand fw-bold fs-3" href="#">Medify</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#profile">Profile</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#doctors">Doctors</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#appointments">Appointments</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#notifications">Notifications</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Home Section -->
+    <section id="home" class="vh-100 d-flex align-items-center bg-light">
+        <div class="container text-center">
+            <h1 class="text-primary mb-4">Welcome to Medify</h1>
+            <p class="lead">
+                Medify is your trusted healthcare companion. Manage your health, book appointments, consult with doctors, and stay up-to-date with your medical needs.
+            </p>
+            <a href="#doctors" class="btn btn-outline-primary mt-3">View Doctors</a>
+        </div>
+    </section>
+    <!-- Profile Section -->
+    <section id="profile" class="vh-100 d-flex align-items-center bg-light">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card shadow border-0 rounded">
+                        <div class="card-body text-center">
+                            <h2 class="text-primary mb-4">Profile</h2>
+                            <p><strong>Name:</strong> <span id="profile-name">John Doe</span></p>
+                            <p><strong>Email:</strong> <span id="profile-email">john.doe@example.com</span></p>
+                            <button id="edit-btn" class="btn btn-outline-primary mt-3" onclick="editProfile()">Edit Profile</button>
+
+                            <!-- Editable Fields -->
+                            <div id="edit-fields" style="display: none;">
+                                <input type="text" id="edit-name" class="form-control mb-3" value="John Doe" />
+                                <input type="email" id="edit-email" class="form-control mb-3" value="john.doe@example.com" />
+                                <button class="btn btn-primary mt-3" onclick="saveProfile()">Save</button>
+                                <button class="btn btn-outline-danger mt-3" onclick="cancelEdit()">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Doctors Section -->
+    <section id="doctors" class="vh-100 bg-light">
+        <div class="container">
+            <h2 class="text-center text-primary mb-4">Doctors</h2>
+            <div class="row">
+                <!-- Doctor Cards -->
+                <div class="col-md-4">
+                    <div class="card shadow border-0">
+                        <div class="card-body text-center">
+                            <h5>Dr.samoha</h5>
+                            <p>Specialty: Cardiology</p>
+                            <button class="btn btn-primary" onclick="bookAndNavigate('Dr.samoha', 'Cardiology')">Book Appointment</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow border-0">
+                        <div class="card-body text-center">
+                            <h5>Dr.taroka</h5>
+                            <p>Specialty: Neurology</p>
+                            <button class="btn btn-primary" onclick="bookAndNavigate('Dr.taroka', 'Neurology')">Book Appointment</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow border-0">
+                        <div class="card-body text-center">
+                            <h5>Dr. Lee</h5>
+                            <p>Specialty: Orthopedics</p>
+                            <button class="btn btn-primary" onclick="bookAndNavigate('Dr. Lee', 'Orthopedics')">Book Appointment</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Appointments Section -->
+    <section id="appointments" class="vh-100 bg-light">
+        <div class="container">
+            <h2 class="text-center text-primary mb-4">Appointments</h2>
+            <p id="selected-doctor">Select a time slot for your appointment:</p>
+            <table class="table table-bordered" id="slots-table">
+                <thead class="table-primary">
+                    <tr>
+                        <th>Time Slot</th>
+                        <th>Availability</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="slots-table-body">
+                    <!-- Dynamic Time Slots -->
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Notifications Section -->
+    <section id="notifications" class="vh-100 bg-light">
+        <div class="container">
+            <h2 class="text-center text-primary mb-4">Notifications</h2>
+            <ul id="notification-list" class="list-group">
+                <!-- Notifications -->
+            </ul>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-primary text-white text-center py-3">
+        &copy; 2024 Medify, All Rights Reserved
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Variables
+        let selectedDoctor = null;
+
+        // Doctor Availability
+        const doctorSlots = {
+            'Dr.samoha': ['10:00 AM', '11:00 AM', '1:00 PM'],
+            'Dr.taroka': ['9:00 AM', '10:30 AM', '12:00 PM'],
+            'Dr.Salma': ['11:00 AM', '1:30 PM', '4:00 PM'],
+            'Dr.shahd': ['12:00 AM', '1:30 PM', '3:00 PM'],
+            'Dr.shiko': ['8:00 AM', '11:30 AM', '2:00 PM']
+
+
+        };
+
+        // Navigate to Appointments Section
+        function bookAndNavigate(doctor, specialty) {
+            selectedDoctor = {
+                doctor,
+                specialty
+            };
+            document.getElementById('appointments').scrollIntoView({
+                behavior: 'smooth'
+            });
+            displaySlots(doctor);
+        }
+
+        // Display Time Slots for Selected Doctor
+        function displaySlots(doctor) {
+            const slotsTableBody = document.getElementById('slots-table-body');
+            slotsTableBody.innerHTML = ''; // Clear existing slots
+            const slots = doctorSlots[doctor] || [];
+            slots.forEach(slot => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${slot}</td>
+                    <td>Available</td>
+                    <td><button class="btn btn-success" onclick="selectSlot('${slot}')">Select</button></td>
+                `;
+                slotsTableBody.appendChild(row);
+            });
+        }
+
+        // Handle Slot Selection
+        function selectSlot(time) {
+            const notificationList = document.getElementById('notification-list');
+            const li = document.createElement('li');
+            li.className = 'list-group-item';
+            li.textContent = `Appointment with ${selectedDoctor.doctor} (${selectedDoctor.specialty}) at ${time}`;
+            notificationList.appendChild(li);
+
+            alert("Appointment booked successfully!");
+            document.getElementById('notifications').scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
+
+        function editProfile() {
+            // Show the editable fields and hide the "Edit Profile" button
+            document.getElementById('edit-fields').style.display = 'block';
+            document.getElementById('edit-btn').style.display = 'none';
+        }
+
+        function saveProfile() {
+            // Get the updated values from the input fields
+            const newName = document.getElementById('edit-name').value.trim();
+            const newEmail = document.getElementById('edit-email').value.trim();
+
+            if (newName && newEmail) {
+                // Update the display fields with the new values
+                document.getElementById('profile-name').textContent = newName;
+                document.getElementById('profile-email').textContent = newEmail;
+
+                // Hide the editable fields and show the "Edit Profile" button
+                cancelEdit();
+
+                alert("Profile updated successfully!");
+            } else {
+                alert("Please fill in both Name and Email fields.");
+            }
+        }
+
+        function cancelEdit() {
+            // Reset input fields to their current display values
+            document.getElementById('edit-name').value = document.getElementById('profile-name').textContent;
+            document.getElementById('edit-email').value = document.getElementById('profile-email').textContent;
+
+            // Hide the editable fields and show the "Edit Profile" button
+            document.getElementById('edit-fields').style.display = 'none';
+            document.getElementById('edit-btn').style.display = 'block';
+        }
+    </script>
+</body>
+
+</html>
