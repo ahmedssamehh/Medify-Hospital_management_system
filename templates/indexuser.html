@@ -36,7 +36,9 @@
     <section id="home" class="vh-100 d-flex align-items-center bg-light">
         <div class="container text-center">
             <h1 class="text-primary mb-4">Welcome to Medify</h1>
-            <p class="lead">Medify is your trusted healthcare companion. Manage your health, book appointments, consult with doctors, and stay up-to-date with your medical needs.</p>
+            <p class="lead">
+                Medify is your trusted healthcare companion. Manage your health, book appointments, consult with doctors, and stay up-to-date with your medical needs.
+            </p>
             <a href="#doctors" class="btn btn-outline-primary mt-3">View Doctors</a>
         </div>
     </section>
@@ -128,7 +130,7 @@
                 {% if notifications %} {% for notification in notifications %}
                 <li class="list-group-item">{{ notification.message }}</li>
                 {% endfor %} {% else %}
-                <li class="list-group-item">No notifications yet.</li>
+                <li class="list-group-item">No appointments booked yet.</li>
                 {% endif %}
             </ul>
         </div>
@@ -143,6 +145,8 @@
     <script>
         // Variables
         let selectedDoctor = null;
+
+        // Doctor Availability
         const doctorSlots = {
             'Dr. Smith': ['10:00 AM', '11:00 AM', '1:00 PM'],
             'Dr. Johnson': ['9:00 AM', '10:30 AM', '12:00 PM'],
@@ -164,7 +168,7 @@
         // Display Time Slots for Selected Doctor
         function displaySlots(doctor) {
             const slotsTableBody = document.getElementById('appointments-list');
-            slotsTableBody.innerHTML = '';
+            slotsTableBody.innerHTML = ''; // Clear existing slots
             const slots = doctorSlots[doctor] || [];
             slots.forEach(slot => {
                 const listItem = document.createElement('li');
@@ -182,6 +186,7 @@
             li.textContent = `Appointment with ${selectedDoctor.doctor} (${selectedDoctor.specialty}) at ${time}`;
             notificationList.appendChild(li);
 
+            // Send the appointment data to DATABASE
             fetch('/book_appointment', {
                     method: 'POST',
                     headers: {
@@ -190,7 +195,7 @@
                     body: JSON.stringify({
                         doctor: selectedDoctor.doctor,
                         specialty: selectedDoctor.specialty,
-                        time
+                        time: time
                     })
                 })
                 .then(response => response.json())
@@ -206,11 +211,32 @@
                 });
         }
 
-        // Edit Profile
         function editProfile() {
-
             document.getElementById('edit-fields').style.display = 'block';
             document.getElementById('edit-btn').style.display = 'none';
         }
 
-        // Save Profile Changes
+        function saveProfile() {
+            const newName = document.getElementById('edit-name').value.trim();
+            const newEmail = document.getElementById('edit-email').value.trim();
+
+            if (newName && newEmail) {
+                document.getElementById('profile-name').textContent = newName;
+                document.getElementById('profile-email').textContent = newEmail;
+                cancelEdit();
+                alert("Profile updated successfully!");
+            } else {
+                alert("Please fill in both Name and Email fields.");
+            }
+        }
+
+        function cancelEdit() {
+            document.getElementById('edit-name').value = document.getElementById('profile-name').textContent;
+            document.getElementById('edit-email').value = document.getElementById('profile-email').textContent;
+            document.getElementById('edit-fields').style.display = 'none';
+            document.getElementById('edit-btn').style.display = 'block';
+        }
+    </script>
+</body>
+
+</html>
