@@ -4,7 +4,7 @@ import os
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
 
-
+# kemo the egyption king
 
 #suiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
 # Set secret key for session
