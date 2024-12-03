@@ -36,12 +36,11 @@
     <section id="home" class="vh-100 d-flex align-items-center bg-light">
         <div class="container text-center">
             <h1 class="text-primary mb-4">Welcome to Medify</h1>
-            <p class="lead">
-                Medify is your trusted healthcare companion. Manage your health, book appointments, consult with doctors, and stay up-to-date with your medical needs.
-            </p>
+            <p class="lead">Medify is your trusted healthcare companion. Manage your health, book appointments, consult with doctors, and stay up-to-date with your medical needs.</p>
             <a href="#doctors" class="btn btn-outline-primary mt-3">View Doctors</a>
         </div>
     </section>
+
     <!-- Profile Section -->
     <section id="profile" class="vh-100 d-flex align-items-center bg-light">
         <div class="container">
@@ -50,14 +49,14 @@
                     <div class="card shadow border-0 rounded">
                         <div class="card-body text-center">
                             <h2 class="text-primary mb-4">Profile</h2>
-                            <p><strong>Name:</strong> <span id="profile-name">John Doe</span></p>
-                            <p><strong>Email:</strong> <span id="profile-email">john.doe@example.com</span></p>
+                            <p><strong>Name:</strong> <span id="profile-name">{{ user_name }}</span></p>
+                            <p><strong>Email:</strong> <span id="profile-email">{{ user_email }}</span></p>
                             <button id="edit-btn" class="btn btn-outline-primary mt-3" onclick="editProfile()">Edit Profile</button>
 
                             <!-- Editable Fields -->
                             <div id="edit-fields" style="display: none;">
-                                <input type="text" id="edit-name" class="form-control mb-3" value="John Doe" />
-                                <input type="email" id="edit-email" class="form-control mb-3" value="john.doe@example.com" />
+                                <input type="text" id="edit-name" class="form-control mb-3" value="{{ user_name }}" />
+                                <input type="email" id="edit-email" class="form-control mb-3" value="{{ user_email }}" />
                                 <button class="btn btn-primary mt-3" onclick="saveProfile()">Save</button>
                                 <button class="btn btn-outline-danger mt-3" onclick="cancelEdit()">Cancel</button>
                             </div>
@@ -77,18 +76,18 @@
                 <div class="col-md-4">
                     <div class="card shadow border-0">
                         <div class="card-body text-center">
-                            <h5>Dr.samoha</h5>
+                            <h5>Dr. Smith</h5>
                             <p>Specialty: Cardiology</p>
-                            <button class="btn btn-primary" onclick="bookAndNavigate('Dr.samoha', 'Cardiology')">Book Appointment</button>
+                            <button class="btn btn-primary" onclick="bookAndNavigate('Dr. Smith', 'Cardiology')">Book Appointment</button>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="card shadow border-0">
                         <div class="card-body text-center">
-                            <h5>Dr.taroka</h5>
+                            <h5>Dr. Johnson</h5>
                             <p>Specialty: Neurology</p>
-                            <button class="btn btn-primary" onclick="bookAndNavigate('Dr.taroka', 'Neurology')">Book Appointment</button>
+                            <button class="btn btn-primary" onclick="bookAndNavigate('Dr. Johnson', 'Neurology')">Book Appointment</button>
                         </div>
                     </div>
                 </div>
@@ -106,22 +105,18 @@
     </section>
 
     <!-- Appointments Section -->
-    <section id="appointments" class="vh-100 bg-light">
+    <section id="appointments">
         <div class="container">
-            <h2 class="text-center text-primary mb-4">Appointments</h2>
-            <p id="selected-doctor">Select a time slot for your appointment:</p>
-            <table class="table table-bordered" id="slots-table">
-                <thead class="table-primary">
-                    <tr>
-                        <th>Time Slot</th>
-                        <th>Availability</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="slots-table-body">
-                    <!-- Dynamic Time Slots -->
-                </tbody>
-            </table>
+            <h2 class="text-center text-primary mb-4">Your Appointments</h2>
+            <ul class="list-group" id="appointments-list">
+                {% if appointments %} {% for appointment in appointments %}
+                <li class="list-group-item">
+                    Appointment with Dr. {{ appointment[0] }} ({{ appointment[1] }}) at {{ appointment[2] }}
+                </li>
+                {% endfor %} {% else %}
+                <li class="list-group-item">No appointments found.</li>
+                {% endif %}
+            </ul>
         </div>
     </section>
 
@@ -130,7 +125,11 @@
         <div class="container">
             <h2 class="text-center text-primary mb-4">Notifications</h2>
             <ul id="notification-list" class="list-group">
-                <!-- Notifications -->
+                {% if notifications %} {% for notification in notifications %}
+                <li class="list-group-item">{{ notification.message }}</li>
+                {% endfor %} {% else %}
+                <li class="list-group-item">No notifications yet.</li>
+                {% endif %}
             </ul>
         </div>
     </section>
@@ -144,16 +143,10 @@
     <script>
         // Variables
         let selectedDoctor = null;
-
-        // Doctor Availability
         const doctorSlots = {
-            'Dr.samoha': ['10:00 AM', '11:00 AM', '1:00 PM'],
-            'Dr.taroka': ['9:00 AM', '10:30 AM', '12:00 PM'],
-            'Dr.Salma': ['11:00 AM', '1:30 PM', '4:00 PM'],
-            'Dr.shahd': ['12:00 AM', '1:30 PM', '3:00 PM'],
-            'Dr.shiko': ['8:00 AM', '11:30 AM', '2:00 PM']
-
-
+            'Dr. Smith': ['10:00 AM', '11:00 AM', '1:00 PM'],
+            'Dr. Johnson': ['9:00 AM', '10:30 AM', '12:00 PM'],
+            'Dr. Lee': ['8:00 AM', '11:30 AM', '2:00 PM']
         };
 
         // Navigate to Appointments Section
@@ -170,21 +163,18 @@
 
         // Display Time Slots for Selected Doctor
         function displaySlots(doctor) {
-            const slotsTableBody = document.getElementById('slots-table-body');
-            slotsTableBody.innerHTML = ''; // Clear existing slots
+            const slotsTableBody = document.getElementById('appointments-list');
+            slotsTableBody.innerHTML = '';
             const slots = doctorSlots[doctor] || [];
             slots.forEach(slot => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${slot}</td>
-                    <td>Available</td>
-                    <td><button class="btn btn-success" onclick="selectSlot('${slot}')">Select</button></td>
-                `;
-                slotsTableBody.appendChild(row);
+                const listItem = document.createElement('li');
+                listItem.classList.add('list-group-item');
+                listItem.innerHTML = `${slot} <button class="btn btn-success float-end" onclick="selectSlot('${slot}')">Select</button>`;
+                slotsTableBody.appendChild(listItem);
             });
         }
 
-        // Handle Slot Selection
+        // Handle Slot Selection and Save to Notifications
         function selectSlot(time) {
             const notificationList = document.getElementById('notification-list');
             const li = document.createElement('li');
@@ -192,47 +182,35 @@
             li.textContent = `Appointment with ${selectedDoctor.doctor} (${selectedDoctor.specialty}) at ${time}`;
             notificationList.appendChild(li);
 
-            alert("Appointment booked successfully!");
-            document.getElementById('notifications').scrollIntoView({
-                behavior: 'smooth'
-            });
+            fetch('/book_appointment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        doctor: selectedDoctor.doctor,
+                        specialty: selectedDoctor.specialty,
+                        time
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Appointment booked successfully!");
+                        document.getElementById('notifications').scrollIntoView({
+                            behavior: 'smooth'
+                        });
+                    } else {
+                        alert("There was an error booking your appointment.");
+                    }
+                });
         }
 
+        // Edit Profile
         function editProfile() {
-            // Show the editable fields and hide the "Edit Profile" button
+
             document.getElementById('edit-fields').style.display = 'block';
             document.getElementById('edit-btn').style.display = 'none';
         }
 
-        function saveProfile() {
-            // Get the updated values from the input fields
-            const newName = document.getElementById('edit-name').value.trim();
-            const newEmail = document.getElementById('edit-email').value.trim();
-
-            if (newName && newEmail) {
-                // Update the display fields with the new values
-                document.getElementById('profile-name').textContent = newName;
-                document.getElementById('profile-email').textContent = newEmail;
-
-                // Hide the editable fields and show the "Edit Profile" button
-                cancelEdit();
-
-                alert("Profile updated successfully!");
-            } else {
-                alert("Please fill in both Name and Email fields.");
-            }
-        }
-
-        function cancelEdit() {
-            // Reset input fields to their current display values
-            document.getElementById('edit-name').value = document.getElementById('profile-name').textContent;
-            document.getElementById('edit-email').value = document.getElementById('profile-email').textContent;
-
-            // Hide the editable fields and show the "Edit Profile" button
-            document.getElementById('edit-fields').style.display = 'none';
-            document.getElementById('edit-btn').style.display = 'block';
-        }
-    </script>
-</body>
-
-</html>
+        // Save Profile Changes

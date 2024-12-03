@@ -1,12 +1,12 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 import sqlite3
 import os
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
-#yarb
+
 # Set secret key for session
 app.secret_key = "your_secret_key"
-#test
+
 # Initialize database
 def init_db():
     with sqlite3.connect("users.db") as conn:
@@ -27,6 +27,17 @@ def init_db():
             password TEXT NOT NULL
         )
         """)
+        # Create the appointments table if it doesn't exist
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS appointments (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_email TEXT NOT NULL,
+            doctor_name TEXT NOT NULL,
+            specialty TEXT NOT NULL,
+            time_slot TEXT NOT NULL,
+            FOREIGN KEY (user_email) REFERENCES users (email)
+        )
+        """)
     print("Database initialized!")
 
 init_db()
@@ -40,7 +51,16 @@ def login():
 @app.route('/indexuser')
 def index_user():
     if 'user_type' in session and session['user_type'] == 'user':
-        return render_template('indexuser.html')
+        # Get user email from session
+        user_email = session.get('user_email')
+        
+        # Get user appointments
+        appointments = get_appointments(user_email)
+        
+        # Get notifications for the user
+        notifications = get_notifications(user_email)
+        
+        return render_template('indexuser.html', appointments=appointments, notifications=notifications)
     return redirect(url_for('login'))
 
 # Route: Admin Dashboard
@@ -56,22 +76,22 @@ def handle_login():
     email = request.form.get('email')
     password = request.form.get('pswd')
 
-    # Check if the email exists in the admins table first
     with sqlite3.connect("users.db") as conn:
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM admins WHERE email = ? AND password = ?", (email, password))
         admin = cursor.fetchone()
 
-        # If not found in admins, check in users
         if not admin:
             cursor.execute("SELECT * FROM users WHERE email = ? AND password = ?", (email, password))
             user = cursor.fetchone()
 
     if admin:
         session['user_type'] = 'admin'
+        session['user_email'] = email  # Store email in session
         return redirect(url_for('index_admin'))
     elif user:
         session['user_type'] = 'user'
+        session['user_email'] = email  # Store email in session
         return redirect(url_for('index_user'))
     else:
         return "Invalid login. Please try again."
@@ -82,7 +102,6 @@ def handle_signup():
     email = request.form.get('email')
     password = request.form.get('pswd')
 
-    # Check if the email contains @admin or @user
     if '@admin' in email:
         table = 'admins'
     elif '@user' in email:
@@ -90,7 +109,6 @@ def handle_signup():
     else:
         return "Invalid email. Must contain @admin or @user."
 
-    # Insert data into the appropriate table
     with sqlite3.connect("users.db") as conn:
         cursor = conn.cursor()
         try:
@@ -100,11 +118,64 @@ def handle_signup():
         except sqlite3.IntegrityError:
             return "Email already exists. Please try again."
 
-# Route: Logout
+# Route: Handle Logout
 @app.route('/logout')
 def logout():
     session.pop('user_type', None)
+    session.pop('user_email', None)  # Remove the email from session
     return redirect(url_for('login'))
 
-if __name__ == "__main__":
+# Route: Book Appointment
+@app.route('/book_appointment', methods=['POST'])
+def book_appointment():
+    data = request.get_json()
+    doctor = data.get('doctor')
+    specialty = data.get('specialty')
+    time = data.get('time')
+    user_email = session.get('user_email')  # Get user's email from session
+
+    if not user_email:
+        return {"success": False, "message": "User not logged in"}, 400
+
+    # Insert the appointment into the database
+    with sqlite3.connect("users.db") as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+        INSERT INTO appointments (user_email, doctor_name, specialty, time_slot)
+        VALUES (?, ?, ?, ?)
+        """, (user_email, doctor, specialty, time))
+        conn.commit()
+
+    # Add appointment to notifications
+    add_to_notifications(user_email, doctor, specialty, time)
+
+    return {"success": True}
+
+# Route: Get Appointments
+def get_appointments(user_email):
+    with sqlite3.connect("users.db") as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT doctor_name, specialty, time_slot FROM appointments WHERE user_email = ?", (user_email,))
+        appointments = cursor.fetchall()
+    return appointments
+
+# Route: Get Notifications
+def get_notifications(user_email):
+    with sqlite3.connect("users.db") as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT doctor_name, specialty, time_slot FROM appointments WHERE user_email = ?", (user_email,))
+        appointments = cursor.fetchall()
+    return [{"message": f"Appointment with Dr. {row[0]} ({row[1]}) at {row[2]}"} for row in appointments]
+
+# Route: Add Appointment to Notifications
+def add_to_notifications(user_email, doctor, specialty, time):
+    with sqlite3.connect("users.db") as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+        INSERT INTO appointments (user_email, doctor_name, specialty, time_slot)
+        VALUES (?, ?, ?, ?)
+        """, (user_email, doctor, specialty, time))
+        conn.commit()
+
+if __name__ == "_main_":
     app.run(debug=True)
