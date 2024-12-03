@@ -4,6 +4,9 @@ import os
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
 
+
+
+#suiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
 # Set secret key for session
 app.secret_key = "your_secret_key"
 
