@@ -3,10 +3,8 @@ import sqlite3
 import os
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
-app.secret_key =  "6e6b4e033bb676a25a94401745a7f1deab85c8e1b2b1424e6e92847b528373cb"
+app.secret_key = "6e6b4e033bb676a25a94401745a7f1deab85c8e1b2b1424e6e92847b528373cb"
 
-#Test github
-#test
 def init_db():
     with sqlite3.connect("users.db") as conn:
         cursor = conn.cursor()
@@ -54,28 +52,42 @@ def index_user():
 @app.route('/indexadmin')
 def index_admin():
     if 'user_type' in session and session['user_type'] == 'admin':
-        return render_template('admin/home.html')
+        return render_template('home.html')
     return redirect(url_for('login'))
 
 @app.route('/login', methods=['POST'])
 def handle_login():
     email = request.form.get('email')
     password = request.form.get('pswd')
+
     with sqlite3.connect("users.db") as conn:
         cursor = conn.cursor()
+        
+        # Check if the user is an admin
         cursor.execute("SELECT * FROM admins WHERE email = ? AND password = ?", (email, password))
         admin = cursor.fetchone()
+        
+        # Check if the user is a regular user
         if not admin:
             cursor.execute("SELECT * FROM users WHERE email = ? AND password = ?", (email, password))
             user = cursor.fetchone()
+    
+    # Redirect based on user type
     if admin:
         session['user_type'] = 'admin'
         session['user_email'] = email
-        return redirect(url_for('index_admin'))
+        
+        # Check if the email ends with @admin and redirect to home.html
+        if email.endswith('@admin'):
+            return render_template('home.html')
+        else:
+            return redirect(url_for('index_admin'))
+
     elif user:
         session['user_type'] = 'user'
         session['user_email'] = email
         return redirect(url_for('index_user'))
+    
     else:
         return "Invalid login. Please try again."
 

@@ -26,7 +26,8 @@
                     <li class="nav-item"><a class="nav-link" href="notifications.html">Notifications</a></li>
                     <li class="nav-item"><a class="nav-link" href="feedback.html">Feedback</a></li>
                     <li class="nav-item"><a class="nav-link" href="manage_users.html">Users</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+                    <!-- 
+                    <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li> -->
                 </ul>
             </div>
         </div>
@@ -78,7 +79,7 @@
         const notificationList = document.getElementById('notificationList');
 
         // Handle Notification Form Submission
-        notificationForm.addEventListener('submit', function (event) {
+        notificationForm.addEventListener('submit', function(event) {
             event.preventDefault();
 
             const selectedUser = document.getElementById('userSelect').value;
@@ -97,7 +98,7 @@
                 notificationList.appendChild(listItem);
 
                 // Handle Delete Button
-                listItem.querySelector('.delete').addEventListener('click', function () {
+                listItem.querySelector('.delete').addEventListener('click', function() {
                     listItem.remove();
                 });
 

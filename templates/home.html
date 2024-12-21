@@ -26,7 +26,8 @@
                     <li class="nav-item"><a class="nav-link" href="notifications.html">Notifications</a></li>
                     <li class="nav-item"><a class="nav-link" href="feedback.html">Feedback</a></li>
                     <li class="nav-item"><a class="nav-link" href="manage_users.html">Users</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+                    <!-- 
+                    <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li> -->
                 </ul>
             </div>
         </div>
@@ -49,7 +50,12 @@
         // Function to display the current date
         const setCurrentDate = () => {
             const currentDate = new Date();
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const options = {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            };
             document.getElementById('current-date').innerText = currentDate.toLocaleDateString('en-US', options);
         };
 
