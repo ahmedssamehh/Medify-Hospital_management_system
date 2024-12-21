@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Profile</title>
+    <link rel="stylesheet" href="../static/css/profile.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="home.html">Admin Dashboard</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="home.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="profile.html">Profile</a></li>
+                    <li class="nav-item"><a class="nav-link" href="manage_doctors.html">Manage Doctors</a></li>
+                    <li class="nav-item"><a class="nav-link" href="manage_appointments.html">Manage Appointments</a></li>
+                    <li class="nav-item"><a class="nav-link" href="notifications.html">Notifications</a></li>
+                    <li class="nav-item"><a class="nav-link" href="feedback.html">Feedback</a></li>
+                    <li class="nav-item"><a class="nav-link" href="manage_users.html">Users</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Profile Section -->
+    <section id="profile" class="vh-100 d-flex align-items-center bg-light">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card shadow border-0 rounded">
+                        <div class="card-body text-center">
+                            <h2 class="text-primary mb-4">Edit Profile</h2>
+                            <p><strong>Name:</strong> <span id="profile-name">{{ admin_name }}</span></p>
+                            <p><strong>Email:</strong> <span id="profile-email">{{ admin_email }}</span></p>
+                            <button id="edit-btn" class="btn btn-outline-primary mt-3" onclick="editProfile()">Edit Profile</button>
+
+                            <!-- Editable Fields -->
+                            <div id="edit-fields" style="display: none;">
+                                <input type="text" id="edit-name" class="form-control mb-3" value="{{ admin_name }}" />
+                                <input type="email" id="edit-email" class="form-control mb-3" value="{{ admin_email }}" />
+                                <button class="btn btn-primary mt-3" onclick="saveProfile()">Save</button>
+                                <button class="btn btn-outline-danger mt-3" onclick="cancelEdit()">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-primary text-white text-center py-3">
+        &copy; 2024 Medify, All Rights Reserved.
+    </footer>
+
+    <script>
+        function editProfile() {
+            document.getElementById('edit-fields').style.display = 'block';
+            document.getElementById('edit-btn').style.display = 'none';
+        }
+
+        function saveProfile() {
+            const newName = document.getElementById('edit-name').value.trim();
+            const newEmail = document.getElementById('edit-email').value.trim();
+
+            if (newName && newEmail) {
+                document.getElementById('profile-name').textContent = newName;
+                document.getElementById('profile-email').textContent = newEmail;
+                cancelEdit();
+                alert("Profile updated successfully!");
+            } else {
+                alert("Please fill in both Name and Email fields.");
+            }
+        }
+
+        function cancelEdit() {
+            document.getElementById('edit-name').value = document.getElementById('profile-name').textContent;
+            document.getElementById('edit-email').value = document.getElementById('profile-email').textContent;
+            document.getElementById('edit-fields').style.display = 'none';
+            document.getElementById('edit-btn').style.display = 'block';
+        }
+    </script>
+</body>
+
+</html>
