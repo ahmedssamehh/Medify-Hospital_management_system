@@ -1,0 +1,46 @@
+/* profile.css */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    color: #212529;
+}
+
+.navbar {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card {
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    margin-top: 20px;
+}
+
+.card-body h2 {
+    font-size: 1.8rem;
+    color: #007bff;
+    margin-bottom: 20px;
+}
+
+.card-body p {
+    font-size: 1rem;
+    margin-bottom: 10px;
+}
+
+.card-body button {
+    width: 100%;
+    margin-top: 10px;
+}
+
+#edit-fields {
+    margin-top: 20px;
+}
+
+footer {
+    background-color: #007bff;
+    color: white;
+    padding: 15px 0;
+    text-align: center;
+}

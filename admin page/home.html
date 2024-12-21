@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Home</title>
+    <link rel="stylesheet" href="../static/css/home.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="home.html">Admin Dashboard</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="home.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="profile.html">Profile</a></li>
+                    <li class="nav-item"><a class="nav-link" href="manage_doctors.html">Manage Doctors</a></li>
+                    <li class="nav-item"><a class="nav-link" href="manage_appointments.html">Manage Appointments</a></li>
+                    <li class="nav-item"><a class="nav-link" href="notifications.html">Notifications</a></li>
+                    <li class="nav-item"><a class="nav-link" href="feedback.html">Feedback</a></li>
+                    <li class="nav-item"><a class="nav-link" href="manage_users.html">Users</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Welcome Section -->
+    <section id="home" class="vh-100 d-flex align-items-center bg-light">
+        <div class="container text-center">
+            <h1 class="text-primary mb-4">Welcome, Admin!</h1>
+            <p class="lead">Today is <span id="current-date"></span>.</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-primary text-white text-center py-3">
+        &copy; 2024 Medify, All Rights Reserved.
+    </footer>
+
+    <script>
+        // Function to display the current date
+        const setCurrentDate = () => {
+            const currentDate = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('current-date').innerText = currentDate.toLocaleDateString('en-US', options);
+        };
+
+        // Call the function on load
+        window.onload = setCurrentDate;
+    </script>
+</body>
+
+</html>
