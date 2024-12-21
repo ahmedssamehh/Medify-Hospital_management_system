@@ -144,6 +144,25 @@ def index_user():
         return render_template('indexuser.html', appointments=appointments, notifications=notifications)
     return redirect(url_for('login'))
 
+@app.route('/book_appointment', methods=['POST'])
+def book_appointment():
+    data = request.get_json()
+    doctor = data.get('doctor')
+    specialty = data.get('specialty')
+    time = data.get('time')
+    user_email = session.get('user_email')
+    if not user_email:
+        return {"success": False, "message": "User not logged in"}, 400
+    with sqlite3.connect("users.db") as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+        INSERT INTO appointments (user_email, doctor_name, specialty, time_slot)
+        VALUES (?, ?, ?, ?)
+        """, (user_email, doctor, specialty, time))
+        conn.commit()
+    add_to_notifications(user_email, doctor, specialty, time)
+    return {"success": True}
+
 def get_appointments(user_email):
     with sqlite3.connect("users.db") as conn:
         cursor = conn.cursor()
@@ -157,6 +176,15 @@ def get_notifications(user_email):
         cursor.execute("SELECT doctor_name, specialty, time_slot FROM appointments WHERE user_email = ?", (user_email,))
         appointments = cursor.fetchall()
     return [{"message": f"Appointment with Dr. {row[0]} ({row[1]}) at {row[2]}"} for row in appointments]
+
+def add_to_notifications(user_email, doctor, specialty, time):
+    with sqlite3.connect("users.db") as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+        INSERT INTO appointments (user_email, doctor_name, specialty, time_slot)
+        VALUES (?, ?, ?, ?)
+        """, (user_email, doctor, specialty, time))
+        conn.commit()
 
 if __name__ == "__main__":
     app.run(debug=True)
