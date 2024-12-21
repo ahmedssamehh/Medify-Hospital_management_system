@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Users</title>
+    <link rel="stylesheet" href="../static/css/manage_users.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="home.html">Admin Dashboard</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="home.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="profile.html">Profile</a></li>
+                    <li class="nav-item"><a class="nav-link" href="manage_doctors.html">Manage Doctors</a></li>
+                    <li class="nav-item"><a class="nav-link" href="manage_appointments.html">Manage Appointments</a></li>
+                    <li class="nav-item"><a class="nav-link" href="notifications.html">Notifications</a></li>
+                    <li class="nav-item"><a class="nav-link" href="feedback.html">Feedback</a></li>
+                    <li class="nav-item"><a class="nav-link" href="manage_users.html">Users</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Manage Users Section -->
+    <section class="vh-100 bg-light">
+        <div class="container">
+            <h2 class="text-primary mb-4 text-center">Manage Users</h2>
+
+            <!-- Users Table -->
+            <table class="table table-bordered table-striped">
+                <thead class="table-primary">
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone Number</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="usersTable">
+                    <tr>
+                        <td>Jane Smith</td>
+                        <td>jane.smith@example.com</td>
+                        <td>+123456789</td>
+                        <td>
+                            <button class="btn btn-sm btn-danger delete">Delete</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Mark Taylor</td>
+                        <td>mark.taylor@example.com</td>
+                        <td>+987654321</td>
+                        <td>
+                            <button class="btn btn-sm btn-danger delete">Delete</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-primary text-white text-center py-3">
+        &copy; 2024 Medify, All Rights Reserved.
+    </footer>
+
+    <!-- Inline JavaScript -->
+    <script>
+        const usersTable = document.getElementById('usersTable');
+
+        // Handle Delete Action
+        usersTable.addEventListener('click', function (event) {
+            if (event.target.classList.contains('delete')) {
+                if (confirm('Are you sure you want to delete this user?')) {
+                    event.target.closest('tr').remove();
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

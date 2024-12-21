@@ -1,0 +1,32 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    color: #212529;
+}
+
+.navbar {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#welcome-section {
+    padding: 50px 0;
+    background-color: #e9ecef;
+    border-bottom: 2px solid #dee2e6;
+}
+
+#welcome-section h1 {
+    font-size: 2.5rem;
+    color: #007bff;
+}
+
+#welcome-section p {
+    font-size: 1.2rem;
+    color: #6c757d;
+}
+
+footer {
+    background-color: #007bff;
+    color: white;
+    padding: 15px 0;
+    text-align: center;
+}
