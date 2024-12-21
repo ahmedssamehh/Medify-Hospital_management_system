@@ -1,11 +1,12 @@
-# app.py
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 import sqlite3
 import os
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
-app.secret_key = "your_secret_key"
+app.secret_key =  "6e6b4e033bb676a25a94401745a7f1deab85c8e1b2b1424e6e92847b528373cb"
 
+#Test github
+#test
 def init_db():
     with sqlite3.connect("users.db") as conn:
         cursor = conn.cursor()
@@ -53,7 +54,7 @@ def index_user():
 @app.route('/indexadmin')
 def index_admin():
     if 'user_type' in session and session['user_type'] == 'admin':
-        return render_template('admin.html')  # Updated to render admin.html
+        return render_template('admin/home.html')
     return redirect(url_for('login'))
 
 @app.route('/login', methods=['POST'])
