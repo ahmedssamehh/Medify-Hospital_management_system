@@ -1,6 +1,5 @@
-from flask import Flask, render_template, request, redirect, url_for, session, jsonify
+from flask import Flask, render_template, request, redirect, url_for, session
 import sqlite3
-import os
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
 app.secret_key = "6e6b4e033bb676a25a94401745a7f1deab85c8e1b2b1424e6e92847b528373cb"
@@ -40,19 +39,46 @@ init_db()
 def login():
     return render_template('index.html')
 
-@app.route('/indexuser')
-def index_user():
-    if 'user_type' in session and session['user_type'] == 'user':
-        user_email = session.get('user_email')
-        appointments = get_appointments(user_email)
-        notifications = get_notifications(user_email)
-        return render_template('indexuser.html', appointments=appointments, notifications=notifications)
-    return redirect(url_for('login'))
-
 @app.route('/indexadmin')
 def index_admin():
     if 'user_type' in session and session['user_type'] == 'admin':
         return render_template('home.html')
+    return redirect(url_for('login'))
+
+@app.route('/profile')
+def profile():
+    if 'user_type' in session and session['user_type'] == 'admin':
+        return render_template('profile.html')
+    return redirect(url_for('login'))
+
+@app.route('/manage_doctors')
+def manage_doctors():
+    if 'user_type' in session and session['user_type'] == 'admin':
+        return render_template('manage_doctors.html')
+    return redirect(url_for('login'))
+
+@app.route('/manage_appointments')
+def manage_appointments():
+    if 'user_type' in session and session['user_type'] == 'admin':
+        return render_template('manage_appointments.html')
+    return redirect(url_for('login'))
+
+@app.route('/notifications')
+def notifications():
+    if 'user_type' in session and session['user_type'] == 'admin':
+        return render_template('notifications.html')
+    return redirect(url_for('login'))
+
+@app.route('/feedback')
+def feedback():
+    if 'user_type' in session and session['user_type'] == 'admin':
+        return render_template('feedback.html')
+    return redirect(url_for('login'))
+
+@app.route('/manage_users')
+def manage_users():
+    if 'user_type' in session and session['user_type'] == 'admin':
+        return render_template('manage_users.html')
     return redirect(url_for('login'))
 
 @app.route('/login', methods=['POST'])
@@ -76,18 +102,11 @@ def handle_login():
     if admin:
         session['user_type'] = 'admin'
         session['user_email'] = email
-        
-        # Check if the email ends with @admin and redirect to home.html
-        if email.endswith('@admin'):
-            return render_template('home.html')
-        else:
-            return redirect(url_for('index_admin'))
-
+        return redirect(url_for('index_admin'))
     elif user:
         session['user_type'] = 'user'
         session['user_email'] = email
         return redirect(url_for('index_user'))
-    
     else:
         return "Invalid login. Please try again."
 
@@ -116,24 +135,14 @@ def logout():
     session.pop('user_email', None)
     return redirect(url_for('login'))
 
-@app.route('/book_appointment', methods=['POST'])
-def book_appointment():
-    data = request.get_json()
-    doctor = data.get('doctor')
-    specialty = data.get('specialty')
-    time = data.get('time')
-    user_email = session.get('user_email')
-    if not user_email:
-        return {"success": False, "message": "User not logged in"}, 400
-    with sqlite3.connect("users.db") as conn:
-        cursor = conn.cursor()
-        cursor.execute("""
-        INSERT INTO appointments (user_email, doctor_name, specialty, time_slot)
-        VALUES (?, ?, ?, ?)
-        """, (user_email, doctor, specialty, time))
-        conn.commit()
-    add_to_notifications(user_email, doctor, specialty, time)
-    return {"success": True}
+@app.route('/indexuser')
+def index_user():
+    if 'user_type' in session and session['user_type'] == 'user':
+        user_email = session.get('user_email')
+        appointments = get_appointments(user_email)
+        notifications = get_notifications(user_email)
+        return render_template('indexuser.html', appointments=appointments, notifications=notifications)
+    return redirect(url_for('login'))
 
 def get_appointments(user_email):
     with sqlite3.connect("users.db") as conn:
@@ -148,15 +157,6 @@ def get_notifications(user_email):
         cursor.execute("SELECT doctor_name, specialty, time_slot FROM appointments WHERE user_email = ?", (user_email,))
         appointments = cursor.fetchall()
     return [{"message": f"Appointment with Dr. {row[0]} ({row[1]}) at {row[2]}"} for row in appointments]
-
-def add_to_notifications(user_email, doctor, specialty, time):
-    with sqlite3.connect("users.db") as conn:
-        cursor = conn.cursor()
-        cursor.execute("""
-        INSERT INTO appointments (user_email, doctor_name, specialty, time_slot)
-        VALUES (?, ?, ?, ?)
-        """, (user_email, doctor, specialty, time))
-        conn.commit()
 
 if __name__ == "__main__":
     app.run(debug=True)
