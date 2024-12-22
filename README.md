@@ -88,11 +88,16 @@
 
 ## Contributing
 
-The project is maintained by:
+**The project is maintained by:**
+
+@ahmedssamehh
 
 @motarek122112
+
 @seifamr062
+
 @shahdTarekk
+
 @salmaZZiada
 
 ---
