@@ -163,6 +163,29 @@ def book_appointment():
     add_to_notifications(user_email, doctor, specialty, time)
     return {"success": True}
 
+
+@app.route('/submit_suggestions', methods=['POST'])
+def submit_suggestions():
+    if 'user_email' not in session:
+        return {"success": False, "message": "User not logged in"}, 401
+
+    suggestion = request.form.get('suggestions')
+    user_email = session.get('user_email')
+
+    if not suggestion.strip():
+        return {"success": False, "message": "Suggestion cannot be empty!"}, 400
+
+    with sqlite3.connect("users.db") as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+        INSERT INTO suggestions (user_email, suggestion) VALUES (?, ?)
+        """, (user_email, suggestion))
+        conn.commit()
+
+    return {"success": True, "message": "Thank you for your suggestion!"}
+
+
+
 def get_appointments(user_email):
     with sqlite3.connect("users.db") as conn:
         cursor = conn.cursor()

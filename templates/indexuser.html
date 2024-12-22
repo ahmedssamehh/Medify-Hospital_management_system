@@ -135,6 +135,22 @@
             </ul>
         </div>
     </section>
+    <!-- Suggestions Section -->
+    <section id="suggestions" class="vh-100 bg-light">
+        <div class="container">
+            <h2 class="text-center text-primary mb-4">add your Suggestion</h2>
+            <form action="/submit_suggestions" method="post">
+                <div class="mb-3">
+                    <label for="suggestions-textarea" class="form-label">We value your feedback. Please share your suggestions:</label>
+                    <textarea id="suggestions-textarea" class="form-control" name="suggestions" rows="4" placeholder="Enter your suggestions here..."></textarea>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+        </div>
+    </section>
+
 
     <!-- Footer -->
     <footer class="bg-primary text-white text-center py-3">
@@ -237,6 +253,33 @@
             document.getElementById('edit-btn').style.display = 'block';
         }
     </script>
+    <script>
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent the default form submission
+
+            const formData = new FormData(this);
+            const url = this.action;
+
+            fetch(url, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message); // Show the success message
+                        this.reset(); // Clear the form fields
+                    } else {
+                        alert(data.message); // Show the error message
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert("An error occurred. Please try again.");
+                });
+        });
+    </script>
+
 </body>
 
 </html>
