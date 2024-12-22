@@ -221,6 +221,25 @@ def feedback():
         return render_template('feedback.html', suggestions=suggestions)
     return redirect(url_for('login'))
 
+@app.route('/send_feedback_reply', methods=['POST'])
+def send_feedback_reply():
+    data = request.json
+    user_email = data.get('user_email')
+    reply_message = data.get('reply_message')
+
+    if not user_email or not reply_message:
+        return {"success": False, "message": "Invalid data"}, 400
+
+    with sqlite3.connect("users.db") as conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+            INSERT INTO notifications (user_email, message)
+            VALUES (?, ?)
+        """, (user_email, reply_message))
+        conn.commit()
+
+    return {"success": True, "message": "Reply sent successfully"}
+
 
 
 
