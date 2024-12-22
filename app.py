@@ -444,10 +444,5 @@ def add_to_notifications(user_email, doctor, specialty, time):
         VALUES (?, ?, ?, ?)
         """, (user_email, doctor, specialty, time))
         conn.commit()
-
-
-
-
-
 if __name__ == "__main__":
     app.run(debug=True)
