@@ -263,6 +263,32 @@
             document.getElementById('edit-btn').style.display = 'block';
         }
     </script>
+    <script>
+        document.querySelector('form').addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent the default form submission
+
+            const formData = new FormData(this);
+            const url = this.action;
+
+            fetch(url, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message); // Show the success message
+                        this.reset(); // Clear the form fields
+                    } else {
+                        alert(data.message); // Show the error message
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert("An error occurred. Please try again.");
+                });
+        });
+    </script>
 </body>
 
 </html>
