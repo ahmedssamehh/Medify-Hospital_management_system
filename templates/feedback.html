@@ -27,12 +27,10 @@
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('feedback') }}">Feedback</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('manage_users') }}">Users</a></li>
                     <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
-
                 </ul>
             </div>
         </div>
     </nav>
-
 
     <!-- Feedback Management Section -->
     <section class="vh-100 bg-light">
@@ -47,22 +45,22 @@
                     </tr>
                 </thead>
                 <tbody id="feedbackTable">
-                    <tr>
-                        <td>Jane Smith</td>
-                        <td>The booking process was seamless. Thanks!</td>
-                        <td>
-                            <button class="btn btn-sm btn-primary reply">Reply</button>
-                            <button class="btn btn-sm btn-danger delete">Delete</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>Mark Taylor</td>
-                        <td>The doctor's schedule was unclear.</td>
-                        <td>
-                            <button class="btn btn-sm btn-primary reply">Reply</button>
-                            <button class="btn btn-sm btn-danger delete">Delete</button>
-                        </td>
-                    </tr>
+                    {% if suggestions %}
+                        {% for suggestion in suggestions %}
+                            <tr>
+                                <td>{{ suggestion[0] }}</td>
+                                <td>{{ suggestion[1] }}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary reply">Reply</button>
+                                    <button class="btn btn-sm btn-danger delete">Delete</button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="3" class="text-center">No feedback available.</td>
+                        </tr>
+                    {% endif %}
                 </tbody>
             </table>
         </div>
@@ -78,18 +76,42 @@
         const feedbackTable = document.getElementById('feedbackTable');
 
         // Handle Feedback Actions
-        feedbackTable.addEventListener('click', function(event) {
+        feedbackTable.addEventListener('click', function (event) {
             const target = event.target;
 
             // Reply Action
             if (target.classList.contains('reply')) {
                 const feedbackRow = target.closest('tr');
                 const feedbackText = feedbackRow.querySelector('td:nth-child(2)').textContent;
-                const userName = feedbackRow.querySelector('td:nth-child(1)').textContent;
+                const userEmail = feedbackRow.querySelector('td:nth-child(1)').textContent;
 
-                const replyMessage = prompt(`Reply to ${userName}:\n\n"${feedbackText}"`);
+                const replyMessage = prompt(`Reply to ${userEmail}:
+
+"${feedbackText}"`);
                 if (replyMessage) {
-                    alert(`Reply sent to ${userName}:\n\n"${replyMessage}"`);
+                    // Send the reply to the server for saving in notifications
+                    fetch('/send_feedback_reply', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            user_email: userEmail,
+                            reply_message: replyMessage
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert(`Reply sent to ${userEmail}: ${data.message}`);
+                        } else {
+                            alert('Failed to send reply: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred while sending the reply.');
+                    });
                 }
             }
 

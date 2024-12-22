@@ -27,12 +27,10 @@
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('feedback') }}">Feedback</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('manage_users') }}">Users</a></li>
                     <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
-
                 </ul>
             </div>
         </div>
     </nav>
-
 
     <!-- Notifications Section -->
     <section class="vh-100 bg-light">
@@ -47,8 +45,9 @@
                         <div class="col-md-6">
                             <select id="userSelect" class="form-control" required>
                                 <option value="" disabled selected>Select a User</option>
-                                <option value="Jane Smith">Jane Smith (Booked with Dr. John Doe)</option>
-                                <option value="Mark Taylor">Mark Taylor (Booked with Dr. Jane Smith)</option>
+                                {% for user in users %}
+                                    <option value="{{ user[0] }}">{{ user[0] }}</option>
+                                {% endfor %}
                             </select>
                         </div>
                         <div class="col-md-6">
@@ -60,10 +59,20 @@
             </div>
 
             <!-- Notification History -->
-            <div id="notificationHistory">
+            <div id="notificationHistory" class="mt-5">
                 <h4>Notification History</h4>
                 <ul class="list-group" id="notificationList">
-                    <!-- Dynamic notifications will be added here -->
+                    {% if notifications %}
+                        {% for notification in notifications %}
+                            <li class="list-group-item">
+                                <strong>To:</strong> {{ notification.user_email }} <br>
+                                <strong>Message:</strong> {{ notification.message }} <br>
+                                <strong>Date:</strong> {{ notification.date_sent }}
+                            </li>
+                        {% endfor %}
+                    {% else %}
+                        <li class="list-group-item">No notifications sent yet.</li>
+                    {% endif %}
                 </ul>
             </div>
         </div>
@@ -74,39 +83,48 @@
         &copy; 2024 Medify, All Rights Reserved.
     </footer>
 
-    <!-- Inline JavaScript -->
+    <!-- JavaScript -->
     <script>
-        const notificationForm = document.getElementById('notificationForm');
-        const notificationList = document.getElementById('notificationList');
-
-        // Handle Notification Form Submission
-        notificationForm.addEventListener('submit', function(event) {
+        document.getElementById('notificationForm').addEventListener('submit', function (event) {
             event.preventDefault();
 
-            const selectedUser = document.getElementById('userSelect').value;
+            const userEmail = document.getElementById('userSelect').value;
             const message = document.getElementById('notificationMessage').value.trim();
 
-            if (selectedUser && message) {
-                // Add Notification to History
-                const listItem = document.createElement('li');
-                listItem.classList.add('list-group-item');
-                listItem.innerHTML = `
-                    <strong>To:</strong> ${selectedUser} <br>
-                    <strong>Message:</strong> ${message}
-                    <button class="btn btn-sm btn-danger float-end delete">Delete</button>
-                `;
-
-                notificationList.appendChild(listItem);
-
-                // Handle Delete Button
-                listItem.querySelector('.delete').addEventListener('click', function() {
-                    listItem.remove();
-                });
-
-                // Clear Form
-                document.getElementById('userSelect').value = '';
-                document.getElementById('notificationMessage').value = '';
-                alert('Notification sent successfully!');
+            if (userEmail && message) {
+                fetch('/send_notification', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({
+                        user_email: userEmail,
+                        message: message,
+                    }),
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert(data.message);
+                            const notificationList = document.getElementById('notificationList');
+                            const newNotification = document.createElement('li');
+                            newNotification.className = 'list-group-item';
+                            newNotification.innerHTML = `
+                                <strong>To:</strong> ${userEmail} <br>
+                                <strong>Message:</strong> ${message} <br>
+                                <strong>Date:</strong> Just Now
+                            `;
+                            notificationList.appendChild(newNotification);
+                            document.getElementById('notificationMessage').value = '';
+                            document.getElementById('userSelect').value = '';
+                        } else {
+                            alert(data.message);
+                        }
+                    })
+                    .catch(error => {
+                        alert('Error sending notification.');
+                        console.error(error);
+                    });
             } else {
                 alert('Please select a user and write a message.');
             }

@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Doctors</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/manage_doctors.css') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
@@ -21,39 +20,35 @@
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('index_admin') }}">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('profile') }}">Profile</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('manage_doctors') }}">Manage Doctors</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="{{ url_for('manage_doctors') }}">Manage Doctors</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('manage_appointments') }}">Manage Appointments</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('notifications') }}">Notifications</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('feedback') }}">Feedback</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('manage_users') }}">Users</a></li>
                     <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
-
                 </ul>
             </div>
         </div>
     </nav>
 
-
     <!-- Manage Doctors Section -->
     <section class="vh-100 bg-light">
         <div class="container">
             <h2 class="text-primary mb-4 text-center">Manage Doctors</h2>
+
             <!-- Add Doctor Form -->
-            <div class="form-section">
+            <div class="form-section mb-5">
                 <h4>Add Doctor</h4>
-                <form id="addDoctorForm">
-                    <div class="row mb-3">
-                        <div class="col-md-3">
-                            <input type="text" id="doctorName" class="form-control" placeholder="Doctor Name" required>
+                <form id="addDoctorForm" method="POST" action="{{ url_for('add_doctor') }}">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <input type="text" name="doctor_name" class="form-control" placeholder="Doctor Name" required>
                         </div>
-                        <div class="col-md-3">
-                            <input type="text" id="doctorId" class="form-control" placeholder="Doctor ID" required>
+                        <div class="col-md-4 mb-3">
+                            <input type="text" name="specialization" class="form-control" placeholder="Specialization" required>
                         </div>
-                        <div class="col-md-3">
-                            <input type="text" id="specialization" class="form-control" placeholder="Specialization" required>
-                        </div>
-                        <div class="col-md-3">
-                            <input type="number" id="salary" class="form-control" placeholder="Salary" required>
+                        <div class="col-md-4 mb-3">
+                            <input type="number" name="salary" class="form-control" placeholder="Salary" required>
                         </div>
                     </div>
                     <button type="submit" class="btn btn-primary">Add Doctor</button>
@@ -63,9 +58,23 @@
             <!-- Doctors List Section -->
             <div id="doctorsList" class="mt-4">
                 <h4>Doctors List</h4>
-                <div id="doctorsContainer">
-                    <!-- Dynamic doctor sections will be added here -->
-                </div>
+                <ul class="list-group">
+                    {% if doctors %}
+                        {% for doctor in doctors %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>{{ doctor[0] }}</strong> - {{ doctor[2] }} - ${{ doctor[3] }}
+                                </div>
+                                <form method="POST" action="{{ url_for('delete_doctor') }}">
+                                    <input type="hidden" name="doctor_id" value="{{ doctor[1] }}">
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            </li>
+                        {% endfor %}
+                    {% else %}
+                        <li class="list-group-item text-center">No doctors available.</li>
+                    {% endif %}
+                </ul>
             </div>
         </div>
     </section>
@@ -74,74 +83,6 @@
     <footer class="bg-primary text-white text-center py-3">
         &copy; 2024 Medify, All Rights Reserved.
     </footer>
-
-    <!-- Inline JavaScript -->
-    <script>
-        const addDoctorForm = document.getElementById('addDoctorForm');
-        const doctorsContainer = document.getElementById('doctorsContainer');
-
-        // Handle Add Doctor Form Submission
-        addDoctorForm.addEventListener('submit', function(event) {
-            event.preventDefault();
-
-            const doctorName = document.getElementById('doctorName').value;
-            const doctorId = document.getElementById('doctorId').value;
-            const specialization = document.getElementById('specialization').value;
-            const salary = document.getElementById('salary').value;
-
-            // Create Doctor Card
-            const doctorCard = document.createElement('div');
-            doctorCard.classList.add('card', 'mb-3');
-            doctorCard.innerHTML = `
-                <div class="card-header bg-primary text-white">
-                    <h5>${doctorName} (ID: ${doctorId})</h5>
-                    <h6>Specialization: ${specialization} | Salary: $${salary}</h6>
-                </div>
-                <div class="card-body">
-                    <h6>Add Available Slots</h6>
-                    <form class="addSlotForm">
-                        <div class="row mb-3">
-                            <div class="col-md-6">
-                                <input type="date" class="form-control slot-date" required>
-                            </div>
-                            <div class="col-md-6">
-                                <input type="time" class="form-control slot-time" required>
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-sm">Add Slot</button>
-                    </form>
-                    <ul class="list-group mt-3 slots-list">
-                        <!-- Dynamic slots will be added here -->
-                    </ul>
-                </div>
-            `;
-
-            // Append Doctor Card to Container
-            doctorsContainer.appendChild(doctorCard);
-
-            // Reset the Doctor Form
-            addDoctorForm.reset();
-
-            // Handle Add Slot Form Submission for Each Doctor
-            const addSlotForm = doctorCard.querySelector('.addSlotForm');
-            const slotsList = doctorCard.querySelector('.slots-list');
-
-            addSlotForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-
-                const slotDate = addSlotForm.querySelector('.slot-date').value;
-                const slotTime = addSlotForm.querySelector('.slot-time').value;
-
-                const slotItem = document.createElement('li');
-                slotItem.classList.add('list-group-item');
-                slotItem.textContent = `Date: ${slotDate}, Time: ${slotTime}`;
-
-                slotsList.appendChild(slotItem);
-
-                addSlotForm.reset();
-            });
-        });
-    </script>
 </body>
 
 </html>
