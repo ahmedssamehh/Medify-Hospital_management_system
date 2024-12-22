@@ -48,19 +48,22 @@
                     </tr>
                 </thead>
                 <tbody id="appointmentsTable">
-                    <tr>
-                        <td>Dr. John Doe</td>
-                        <td>Jane Smith</td>
-                        <td>2024-12-25</td>
-                        <td>10:00 AM</td>
-                    </tr>
-                    <tr>
-                        <td>Dr. Jane Smith</td>
-                        <td>Mark Taylor</td>
-                        <td>2024-12-26</td>
-                        <td>2:00 PM</td>
-                    </tr>
+                    {% if appointments %}
+                        {% for appointment in appointments %}
+                            <tr>
+                                <td>{{ appointment[0] }}</td>
+                                <td>{{ appointment[1] }}</td>
+                                <td>{{ appointment[2].split()[0] }}</td> <!-- Extract date -->
+                                <td>{{ appointment[2].split()[1] }}</td> <!-- Extract time -->
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="4" class="text-center">No appointments found.</td>
+                        </tr>
+                    {% endif %}
                 </tbody>
+                
             </table>
         </div>
     </section>

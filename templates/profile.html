@@ -27,12 +27,10 @@
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('feedback') }}">Feedback</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('manage_users') }}">Users</a></li>
                     <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
-
                 </ul>
             </div>
         </div>
     </nav>
-
 
     <!-- Profile Section -->
     <section id="profile" class="vh-100 d-flex align-items-center bg-light">
@@ -42,17 +40,14 @@
                     <div class="card shadow border-0 rounded">
                         <div class="card-body text-center">
                             <h2 class="text-primary mb-4">Edit Profile</h2>
+                            <!-- Display Admin Name -->
                             <p><strong>Name:</strong> <span id="profile-name">{{ admin_name }}</span></p>
-                            <p><strong>Email:</strong> <span id="profile-email">{{ admin_email }}</span></p>
-                            <button id="edit-btn" class="btn btn-outline-primary mt-3" onclick="editProfile()">Edit Profile</button>
-
-                            <!-- Editable Fields -->
-                            <div id="edit-fields" style="display: none;">
-                                <input type="text" id="edit-name" class="form-control mb-3" value="{{ admin_name }}" />
-                                <input type="email" id="edit-email" class="form-control mb-3" value="{{ admin_email }}" />
-                                <button class="btn btn-primary mt-3" onclick="saveProfile()">Save</button>
-                                <button class="btn btn-outline-danger mt-3" onclick="cancelEdit()">Cancel</button>
-                            </div>
+                            <!-- Display or Update Phone Number -->
+                            <p><strong>Phone Number:</strong> <span id="profile-phone">{{ phone_number }}</span></p>
+                            <form method="POST">
+                                <input type="text" name="phone" class="form-control mb-3" placeholder="Enter phone number" value="{{ phone_number }}" />
+                                <button class="btn btn-primary mt-3" type="submit">Save</button>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -64,34 +59,6 @@
     <footer class="bg-primary text-white text-center py-3">
         &copy; 2024 Medify, All Rights Reserved.
     </footer>
-
-    <script>
-        function editProfile() {
-            document.getElementById('edit-fields').style.display = 'block';
-            document.getElementById('edit-btn').style.display = 'none';
-        }
-
-        function saveProfile() {
-            const newName = document.getElementById('edit-name').value.trim();
-            const newEmail = document.getElementById('edit-email').value.trim();
-
-            if (newName && newEmail) {
-                document.getElementById('profile-name').textContent = newName;
-                document.getElementById('profile-email').textContent = newEmail;
-                cancelEdit();
-                alert("Profile updated successfully!");
-            } else {
-                alert("Please fill in both Name and Email fields.");
-            }
-        }
-
-        function cancelEdit() {
-            document.getElementById('edit-name').value = document.getElementById('profile-name').textContent;
-            document.getElementById('edit-email').value = document.getElementById('profile-email').textContent;
-            document.getElementById('edit-fields').style.display = 'none';
-            document.getElementById('edit-btn').style.display = 'block';
-        }
-    </script>
 </body>
 
 </html>

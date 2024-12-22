@@ -43,7 +43,6 @@
         </div>
     </section>
 
-    <!-- Profile Section -->
     <section id="profile" class="vh-100 d-flex align-items-center bg-light">
         <div class="container">
             <div class="row justify-content-center">
@@ -51,14 +50,16 @@
                     <div class="card shadow border-0 rounded">
                         <div class="card-body text-center">
                             <h2 class="text-primary mb-4">Profile</h2>
+                            <!-- عرض اسم المستخدم -->
                             <p><strong>Name:</strong> <span id="profile-name">{{ user_name }}</span></p>
-                            <p><strong>Email:</strong> <span id="profile-email">{{ user_email }}</span></p>
+                            <!-- عرض رقم الهاتف -->
+                            <p><strong>Phone Number:</strong> <span id="profile-phone">{{ phone_number }}</span></p>
                             <button id="edit-btn" class="btn btn-outline-primary mt-3" onclick="editProfile()">Edit Profile</button>
-
+    
                             <!-- Editable Fields -->
                             <div id="edit-fields" style="display: none;">
-                                <input type="text" id="edit-name" class="form-control mb-3" value="{{ user_name }}" />
-                                <input type="email" id="edit-email" class="form-control mb-3" value="{{ user_email }}" />
+                                <input type="text" id="edit-name" class="form-control mb-3" value="{{ user_name }}" disabled />
+                                <input type="number" id="edit-phone" class="form-control mb-3" placeholder="Enter your phone number" />
                                 <button class="btn btn-primary mt-3" onclick="saveProfile()">Save</button>
                                 <button class="btn btn-outline-danger mt-3" onclick="cancelEdit()">Cancel</button>
                             </div>
@@ -68,43 +69,106 @@
             </div>
         </div>
     </section>
+    
+    <script>
+    function saveProfile() {
+        const phone = document.getElementById('edit-phone').value.trim();
+
+        if (phone === '') {
+            alert('Please enter a valid phone number!');
+            return;
+        }
+
+        fetch('/indexuser', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({
+                phone: phone
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message);
+                document.getElementById('profile-phone').textContent = phone;
+                document.getElementById('edit-fields').style.display = 'none';
+                document.getElementById('edit-btn').style.display = 'block';
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while saving the phone number.');
+        });
+    }
+</script>
+
+    
+    
+    
 
     <!-- Doctors Section -->
     <section id="doctors" class="vh-100 bg-light">
         <div class="container">
             <h2 class="text-center text-primary mb-4">Doctors</h2>
             <div class="row">
-                <!-- Doctor Cards -->
-                <div class="col-md-4">
-                    <div class="card shadow border-0">
-                        <div class="card-body text-center">
-                            <h5>Dr. Smith</h5>
-                            <p>Specialty: Cardiology</p>
-                            <button class="btn btn-primary" onclick="bookAndNavigate('Dr. Smith', 'Cardiology')">Book Appointment</button>
+                {% if doctors %}
+                    {% for doctor in doctors %}
+                        <div class="col-md-4">
+                            <div class="card shadow border-0">
+                                <div class="card-body text-center">
+                                    <h5>{{ doctor[0] }}</h5>
+                                    <p>Specialty: {{ doctor[1] }}</p>
+                                    <button class="btn btn-primary" onclick="bookAppointment('{{ doctor[0] }}', '{{ doctor[1] }}')">Book Appointment</button>
+                                </div>
+                            </div>
                         </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="col-12">
+                        <p class="text-center">No doctors available at the moment.</p>
                     </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card shadow border-0">
-                        <div class="card-body text-center">
-                            <h5>Dr. Johnson</h5>
-                            <p>Specialty: Neurology</p>
-                            <button class="btn btn-primary" onclick="bookAndNavigate('Dr. Johnson', 'Neurology')">Book Appointment</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card shadow border-0">
-                        <div class="card-body text-center">
-                            <h5>Dr. Lee</h5>
-                            <p>Specialty: Orthopedics</p>
-                            <button class="btn btn-primary" onclick="bookAndNavigate('Dr. Lee', 'Orthopedics')">Book Appointment</button>
-                        </div>
-                    </div>
-                </div>
+                {% endif %}
             </div>
         </div>
     </section>
+    <script>
+        function bookAppointment(doctor, specialty) {
+            const timeSlot = prompt("Please enter your preferred time slot (e.g., 10:00 AM):");
+            if (!timeSlot) {
+                alert("You must provide a time slot!");
+                return;
+            }
+
+            fetch('/book_appointment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    doctor: doctor,
+                    specialty: specialty,
+                    time: timeSlot
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    location.reload();
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("There was an error booking the appointment.");
+            });
+        }
+    </script>
 
     <!-- Appointments Section -->
     <section id="appointments">
@@ -127,12 +191,31 @@
         <div class="container">
             <h2 class="text-center text-primary mb-4">Notifications</h2>
             <ul id="notification-list" class="list-group">
-                {% if notifications %} {% for notification in notifications %}
-                <li class="list-group-item">{{ notification.message }}</li>
-                {% endfor %} {% else %}
-                <li class="list-group-item">No appointments booked yet.</li>
+                {% if notifications %}
+                    {% for notification in notifications %}
+                        <li class="list-group-item">{{ notification[0] }}</li>
+                    {% endfor %}
+                {% else %}
+                    <li class="list-group-item">No notifications yet.</li>
                 {% endif %}
             </ul>
+        </div>
+    </section>
+
+
+    <!-- Suggestions Section -->
+    <section id="suggestions" class="vh-100 bg-light">
+        <div class="container">
+            <h2 class="text-center text-primary mb-4">Add Your Suggestion</h2>
+            <form action="/submit_suggestions" method="post">
+                <div class="mb-3">
+                    <label for="suggestions-textarea" class="form-label">We value your feedback. Please share your suggestions:</label>
+                    <textarea id="suggestions-textarea" class="form-control" name="suggestions" rows="4" placeholder="Enter your suggestions here..."></textarea>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
         </div>
     </section>
 
@@ -141,76 +224,7 @@
         &copy; 2024 Medify, All Rights Reserved
     </footer>
 
-    <!-- JavaScript -->
     <script>
-        // Variables
-        let selectedDoctor = null;
-
-        // Doctor Availability
-        const doctorSlots = {
-            'Dr. Smith': ['10:00 AM', '11:00 AM', '1:00 PM'],
-            'Dr. Johnson': ['9:00 AM', '10:30 AM', '12:00 PM'],
-            'Dr. Lee': ['8:00 AM', '11:30 AM', '2:00 PM']
-        };
-
-        // Navigate to Appointments Section
-        function bookAndNavigate(doctor, specialty) {
-            selectedDoctor = {
-                doctor,
-                specialty
-            };
-            document.getElementById('appointments').scrollIntoView({
-                behavior: 'smooth'
-            });
-            displaySlots(doctor);
-        }
-
-        // Display Time Slots for Selected Doctor
-        function displaySlots(doctor) {
-            const slotsTableBody = document.getElementById('appointments-list');
-            slotsTableBody.innerHTML = ''; // Clear existing slots
-            const slots = doctorSlots[doctor] || [];
-            slots.forEach(slot => {
-                const listItem = document.createElement('li');
-                listItem.classList.add('list-group-item');
-                listItem.innerHTML = `${slot} <button class="btn btn-success float-end" onclick="selectSlot('${slot}')">Select</button>`;
-                slotsTableBody.appendChild(listItem);
-            });
-        }
-
-        // Handle Slot Selection and Save to Notifications
-        function selectSlot(time) {
-            const notificationList = document.getElementById('notification-list');
-            const li = document.createElement('li');
-            li.className = 'list-group-item';
-            li.textContent = `Appointment with ${selectedDoctor.doctor} (${selectedDoctor.specialty}) at ${time}`;
-            notificationList.appendChild(li);
-
-            // Send the appointment data to DATABASE
-            fetch('/book_appointment', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        doctor: selectedDoctor.doctor,
-                        specialty: selectedDoctor.specialty,
-                        time: time
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert("Appointment booked successfully!");
-                        document.getElementById('notifications').scrollIntoView({
-                            behavior: 'smooth'
-                        });
-                    } else {
-                        alert("There was an error booking your appointment.");
-                    }
-                });
-        }
-
         function editProfile() {
             document.getElementById('edit-fields').style.display = 'block';
             document.getElementById('edit-btn').style.display = 'none';
@@ -237,6 +251,35 @@
             document.getElementById('edit-btn').style.display = 'block';
         }
     </script>
+
+
+<script>
+    document.querySelector('form').addEventListener('submit', function (e) {
+        e.preventDefault(); // Prevent the default form submission
+
+        const formData = new FormData(this);
+        const url = this.action;
+
+        fetch(url, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert(data.message); // Show the success message
+                this.reset(); // Clear the form fields
+            } else {
+                alert(data.message); // Show the error message
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert("An error occurred. Please try again.");
+        });
+    });
+</script>
+
 </body>
 
 </html>
