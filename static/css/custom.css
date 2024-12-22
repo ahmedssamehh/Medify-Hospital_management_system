@@ -46,17 +46,26 @@
  }
  
  #home {
-     background: linear-gradient(135deg, #ffffff, #ffffff);
-     color: #389725;
+     /*background: url('../images/home-background5.jpg');*/
+     background-size: cover;
+     background-position-y: bottom;
      text-align: center;
      padding: 100px 20px;
+ }
+ 
+ #home .container {
+     position: relative;
+     /* Keep text and buttons above the overlay */
+     z-index: 1;
+     /* Ensure the content is on top of the background */
  }
  
  #home h1 {
      font-size: 3rem;
      font-weight: bold;
      margin-bottom: 20px;
-     text-shadow: 2px 4px 6px rgba(168, 196, 221, 0.3);
+     text-shadow: 2px 4px 6px rgb(255, 255, 255);
+     /* Add text shadow for better visibility */
  }
  /* #home p {
     font-size: 1.25rem;
@@ -70,11 +79,13 @@
      font-weight: 400;
      line-height: 1.6;
      margin-bottom: 30px;
-     color: #495057;
+     color: #141414;
      letter-spacing: 0.5px;
      max-width: 800px;
      margin-left: auto;
      margin-right: auto;
+     text-shadow: 1px 2px 4px rgb(255, 255, 255);
+     /* Add text shadow for paragraph */
  }
  
  #home .btn {
