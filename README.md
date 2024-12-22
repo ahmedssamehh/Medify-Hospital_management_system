@@ -9,7 +9,8 @@
 - Assigning doctors.
 - Managing prescriptions.
 - Tracking pharmacies.
-- Online appointment booking and doctor profiles.
+- Online appointment booking(normal user) and doctor profiles(admin section).
+**Important:**If you need to make an admin account (make the account ends with @admin.com) , normal user account must ends with @user.com
 
 ---
 
@@ -80,7 +81,50 @@
 
 ## Screenshots
 
+### Login Page
+![Patient Registration Page](screenshots/login1.png)
 
+![Patient Registration Page](screenshots/login2.png)
+
+## User page
+
+### User home page
+![Doctor Profile View](screenshots/user_home_page.png)
+
+
+### doctors section
+![Admin Dashboard](screenshots/doctors_section(home_page).png)
+
+### Appointments section
+![Admin Dashboard](screenshots/appointments_(user_page).png)
+
+### Notifications section
+![Admin Dashboard](screenshots/notifications(user_page).png)
+
+### Feedback section
+![Admin Dashboard](screenshots/feedback(user_page).png)
+
+
+
+## Admin page (when u login with an admin account)
+
+### admin home page
+![Doctor Profile View](screenshots/admin_home.png)
+
+### admin profile page
+![Appointment Booking Interface](screenshots/admin_profile.png)
+
+### Doctors management page
+![Admin Dashboard](screenshots/manage_doctor.png)
+
+### Appointments management page
+![Admin Dashboard](screenshots/manage_appointmentspng)
+
+### Notifications management page
+![Admin Dashboard](screenshots/notificationa.png)
+
+### Feedback management page
+![Admin Dashboard](screenshots/manage_feedback.png)
 
 
 
