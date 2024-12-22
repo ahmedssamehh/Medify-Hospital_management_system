@@ -1,4 +1,4 @@
-# Medify - A Comprehensive Hospital Management System
+## Medify - A Comprehensive Hospital Management System
 
 **Medify** is a hospital management system designed to optimize hospital operations. It integrates patient history, doctor and pharmacy management, and appointment scheduling into a single platform.
 
