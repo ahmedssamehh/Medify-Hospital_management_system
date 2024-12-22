@@ -89,42 +89,45 @@
 ## User page
 
 ### User home page
-![Doctor Profile View](screenshots/user_home_page.png)
+![Doctor Profile View](screenshots/uhp.png)
 
 
 ### doctors section
-![Admin Dashboard](screenshots/doctors_section(home_page).png)
+![Admin Dashboard](screenshots/dch.png)
 
 ### Appointments section
-![Admin Dashboard](screenshots/appointments_(user_page).png)
+![Admin Dashboard](screenshots/au.png)
 
 ### Notifications section
-![Admin Dashboard](screenshots/notifications(user_page).png)
+![Admin Dashboard](screenshots/nu.png)
 
 ### Feedback section
-![Admin Dashboard](screenshots/feedback(user_page).png)
+![Admin Dashboard](screenshots/fu.png)
 
 
 
 ## Admin page (when u login with an admin account)
 
 ### admin home page
-![Doctor Profile View](screenshots/admin_home.png)
+![Doctor Profile View](screenshots/ah.png)
 
 ### admin profile page
-![Appointment Booking Interface](screenshots/admin_profile.png)
+![Appointment Booking Interface](screenshots/ap.png)
 
 ### Doctors management page
-![Admin Dashboard](screenshots/manage_doctor.png)
+![Admin Dashboard](screenshots/md.png)
 
 ### Appointments management page
-![Admin Dashboard](screenshots/manage_appointmentspng)
+![Admin Dashboard](screenshots/ma.png)
 
 ### Notifications management page
-![Admin Dashboard](screenshots/notificationa.png)
+![Admin Dashboard](screenshots/n.png)
 
 ### Feedback management page
-![Admin Dashboard](screenshots/manage_feedback.png)
+![Admin Dashboard](screenshots/mf.png)
+
+### All user's management page
+![Admin Dashboard](screenshots/mu.png)
 
 
 
