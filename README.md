@@ -22,7 +22,7 @@
 
 ---
 
-**##Running Requirements**
+## Running Requirements
 
 **1-Backend Requirements:**
 
@@ -53,14 +53,16 @@
 
 -Postman: For testing API endpoints during development.
 -Swagger: For API documentation and integration.
--Development and Deployment Tools:
 
-Docker:
+**5-Development and Deployment Tools:**
+
+**Docker:**
+
 -Install Docker Desktop or Docker Engine (latest stable version).
 -Ensure docker-compose is available if you plan to use a Docker Compose setup.
 -Git: For version control and collaboration.
 
-**5-System Requirements:**
+**6-System Requirements:**
 
 -Operating System: Windows, macOS, or Linux.
 -RAM: At least 4GB (8GB or more recommended for smooth operation).
@@ -68,7 +70,7 @@ Docker:
 
 ---
 
-##**Usage**
+## Usage
 1. Register/Login as a patient, doctor, or administrator.
 2. Book Appointments through the patient interface.
 3. Manage Prescriptions via the doctor interface.
@@ -76,7 +78,7 @@ Docker:
 
 ---
 
-**##Screenshots**
+## Screenshots
 
 
 
@@ -84,7 +86,7 @@ Docker:
 
 ---
 
-**##Contributing**
+## Contributing
 
 The project is maintained by:
 
@@ -95,7 +97,7 @@ The project is maintained by:
 
 ---
 
-**##License**
+## License
 
 This project is licensed under the MIT License.
 
