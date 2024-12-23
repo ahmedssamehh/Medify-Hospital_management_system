@@ -114,16 +114,16 @@
 ### admin profile page
 ![Appointment Booking Interface](screenshots/ap.png)
 
-### Doctors management page
+### Manage doctors page
 ![Admin Dashboard](screenshots/md.png)
 
-### Appointments management page
+### Manage appointments page
 ![Admin Dashboard](screenshots/ma.png)
 
-### Notifications management page
+### Manage notifications page
 ![Admin Dashboard](screenshots/n.png)
 
-### Feedback management page
+### Manage feedback page
 ![Admin Dashboard](screenshots/mf.png)
 
 ### All user's management page
