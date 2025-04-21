@@ -11,7 +11,10 @@ def init_db():
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             email TEXT NOT NULL UNIQUE,
-            password TEXT NOT NULL
+            password TEXT NOT NULL,
+            full_name TEXT,
+            address TEXT,
+            date_of_birth TEXT
         )
         """)
         cursor.execute("""
@@ -36,7 +39,7 @@ def init_db():
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             email TEXT NOT NULL UNIQUE,
             phone_number TEXT,
-            FOREIGN KEY (email) REFERENCES admins (email)
+            FOREIGN KEY (email) REFERENCES users (email)
         )
         """)
         cursor.execute("""
@@ -66,11 +69,35 @@ def init_db():
         )
         """)
 
-        
-
     print("Database initialized!")
 
+def update_db_schema():
+    with sqlite3.connect("users.db") as conn:
+        cursor = conn.cursor()
+        
+        # Check if full_name column exists in users table
+        cursor.execute("PRAGMA table_info(users)")
+        columns = [column[1] for column in cursor.fetchall()]
+        
+        # Add missing columns to users table if they don't exist
+        if 'full_name' not in columns:
+            cursor.execute("ALTER TABLE users ADD COLUMN full_name TEXT")
+            print("Added full_name column to users table")
+            
+        if 'address' not in columns:
+            cursor.execute("ALTER TABLE users ADD COLUMN address TEXT")
+            print("Added address column to users table")
+            
+        if 'date_of_birth' not in columns:
+            cursor.execute("ALTER TABLE users ADD COLUMN date_of_birth TEXT")
+            print("Added date_of_birth column to users table")
+        
+        conn.commit()
+    
+    print("Database schema updated!")
+
 init_db()
+update_db_schema()  # Run schema update on startup
 
 @app.route('/')
 def login():
@@ -99,26 +126,63 @@ def profile():
             return redirect(url_for('login'))
 
         user_name = user_email.split('@')[0]
+        user_table = 'admins' if session['user_type'] == 'admin' else 'users'
 
         with sqlite3.connect("users.db") as conn:
             cursor = conn.cursor()
+            # Get phone number
             cursor.execute("SELECT phone_number FROM phone_numbers WHERE email = ?", (user_email,))
             phone_data = cursor.fetchone()
             phone_number = phone_data[0] if phone_data else ""
+            
+            # Get additional profile info if user
+            full_name = ""
+            address = ""
+            date_of_birth = ""
+            
+            if session['user_type'] == 'user':
+                cursor.execute("SELECT full_name, address, date_of_birth FROM users WHERE email = ?", (user_email,))
+                user_data = cursor.fetchone()
+                if user_data:
+                    full_name = user_data[0] or ""
+                    address = user_data[1] or ""
+                    date_of_birth = user_data[2] or ""
 
         if request.method == 'POST':
             new_phone = request.form.get('phone')
+            
             with sqlite3.connect("users.db") as conn:
                 cursor = conn.cursor()
+                # Update phone number
                 cursor.execute("""
                 INSERT INTO phone_numbers (email, phone_number)
                 VALUES (?, ?)
                 ON CONFLICT(email) DO UPDATE SET phone_number=excluded.phone_number
                 """, (user_email, new_phone))
+                
+                # Update additional profile info if user
+                if session['user_type'] == 'user':
+                    new_full_name = request.form.get('full_name')
+                    new_address = request.form.get('address')
+                    new_date_of_birth = request.form.get('date_of_birth')
+                    
+                    cursor.execute("""
+                    UPDATE users 
+                    SET full_name = ?, address = ?, date_of_birth = ?
+                    WHERE email = ?
+                    """, (new_full_name, new_address, new_date_of_birth, user_email))
+                
                 conn.commit()
+            
             return redirect(url_for('profile'))
 
-        return render_template('profile.html', user_name=user_name, phone_number=phone_number)
+        return render_template('profile.html', 
+                             user_name=user_name,
+                             phone_number=phone_number,
+                             full_name=full_name,
+                             address=address,
+                             date_of_birth=date_of_birth,
+                             user_type=session['user_type'])
 
     return redirect(url_for('login'))
 
@@ -317,6 +381,10 @@ def handle_signup():
         cursor = conn.cursor()
         try:
             cursor.execute(f"INSERT INTO {table} (email, password) VALUES (?, ?)", (email, password))
+            
+            # Initialize phone number record for the new user
+            cursor.execute("INSERT INTO phone_numbers (email, phone_number) VALUES (?, ?)", (email, ""))
+            
             conn.commit()
             return redirect(url_for('login'))
         except sqlite3.IntegrityError:
@@ -336,6 +404,9 @@ def index_user():
         if not user_email:  
             return redirect(url_for('login'))
 
+        # Extract username from email
+        user_name = user_email.split('@')[0]
+
         with sqlite3.connect("users.db") as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT doctor_name, specialty, time_slot FROM appointments WHERE user_email = ?", (user_email,))
@@ -344,13 +415,60 @@ def index_user():
             notifications = cursor.fetchall()
             cursor.execute("SELECT name, specialization FROM doctors")
             doctors = cursor.fetchall()
+            
+            # Get user profile info
+            cursor.execute("SELECT phone_number FROM phone_numbers WHERE email = ?", (user_email,))
+            phone_data = cursor.fetchone()
+            phone_number = phone_data[0] if phone_data else ""
+            
+            # Get full name from users table
+            cursor.execute("SELECT full_name FROM users WHERE email = ?", (user_email,))
+            full_name_data = cursor.fetchone()
+            full_name = full_name_data[0] if full_name_data and full_name_data[0] else ""
 
         return render_template(
             'indexuser.html',
             appointments=appointments,
             notifications=notifications,
-            doctors=doctors
+            doctors=doctors,
+            user_name=full_name or user_name,
+            user_email=user_email,
+            phone_number=phone_number,
+            full_name=full_name
         )
+    return redirect(url_for('login'))
+
+@app.route('/update_profile_from_index', methods=['POST'])
+def update_profile_from_index():
+    if 'user_type' in session and session['user_type'] == 'user':
+        user_email = session.get('user_email')
+        if not user_email:
+            return redirect(url_for('login'))
+        
+        # Get form data
+        new_phone = request.form.get('phone', '')
+        new_full_name = request.form.get('full_name', '')
+        
+        with sqlite3.connect("users.db") as conn:
+            cursor = conn.cursor()
+            # Update phone number
+            cursor.execute("""
+            INSERT INTO phone_numbers (email, phone_number)
+            VALUES (?, ?)
+            ON CONFLICT(email) DO UPDATE SET phone_number=excluded.phone_number
+            """, (user_email, new_phone))
+            
+            # Update full name
+            cursor.execute("""
+            UPDATE users 
+            SET full_name = ?
+            WHERE email = ?
+            """, (new_full_name, user_email))
+            
+            conn.commit()
+        
+        return redirect(url_for('index_user'))
+    
     return redirect(url_for('login'))
 
 @app.route('/book_appointment', methods=['POST'])

@@ -13,19 +13,26 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="{{ url_for('index_admin') }}">Admin Dashboard</a>
+            <a class="navbar-brand fw-bold" href="{% if user_type == 'admin' %}{{ url_for('index_admin') }}{% else %}{{ url_for('index_user') }}{% endif %}">
+                {% if user_type == 'admin' %}Admin Dashboard{% else %}Medify{% endif %}
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
+                    {% if user_type == 'admin' %}
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('index_admin') }}">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('profile') }}">Profile</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="{{ url_for('profile') }}">Profile</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('manage_doctors') }}">Manage Doctors</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('manage_appointments') }}">Manage Appointments</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('notifications') }}">Notifications</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('feedback') }}">Feedback</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('manage_users') }}">Users</a></li>
+                    {% else %}
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('index_user') }}">Home</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="{{ url_for('profile') }}">Profile</a></li>
+                    {% endif %}
                     <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
                 </ul>
             </div>
@@ -41,12 +48,36 @@
                         <div class="card-body text-center">
                             <h2 class="text-primary mb-4">Edit Profile</h2>
                             <!-- Display Admin Name -->
-                            <p><strong>Name:</strong> <span id="profile-name">{{ admin_name }}</span></p>
-                            <!-- Display or Update Phone Number -->
-                            <p><strong>Phone Number:</strong> <span id="profile-phone">{{ phone_number }}</span></p>
-                            <form method="POST">
-                                <input type="text" name="phone" class="form-control mb-3" placeholder="Enter phone number" value="{{ phone_number }}" />
-                                <button class="btn btn-primary mt-3" type="submit">Save</button>
+                            <p><strong>Name:</strong> <span id="profile-name">{{ user_name }}</span></p>
+
+                            <form method="POST" class="text-start">
+                                <!-- Phone Number field for all users -->
+                                <div class="mb-3">
+                                    <label for="phone" class="form-label"><strong>Phone Number:</strong></label>
+                                    <input type="text" name="phone" id="phone" class="form-control" placeholder="Enter phone number" value="{{ phone_number }}" />
+                                </div>
+
+                                {% if user_type == 'user' %}
+                                <!-- Additional fields for regular users -->
+                                <div class="mb-3">
+                                    <label for="full_name" class="form-label"><strong>Full Name:</strong></label>
+                                    <input type="text" name="full_name" id="full_name" class="form-control" placeholder="Enter full name" value="{{ full_name }}" />
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="address" class="form-label"><strong>Address:</strong></label>
+                                    <textarea name="address" id="address" class="form-control" placeholder="Enter your address">{{ address }}</textarea>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="date_of_birth" class="form-label"><strong>Date of Birth:</strong></label>
+                                    <input type="date" name="date_of_birth" id="date_of_birth" class="form-control" value="{{ date_of_birth }}" />
+                                </div>
+                                {% endif %}
+
+                                <div class="text-center">
+                                    <button class="btn btn-primary mt-3" type="submit">Save Profile</button>
+                                </div>
                             </form>
                         </div>
                     </div>

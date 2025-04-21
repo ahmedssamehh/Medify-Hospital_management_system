@@ -22,7 +22,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" href="#home">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#profile">Profile</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('profile') }}">Profile</a></li>
                     <li class="nav-item"><a class="nav-link" href="#doctors">Doctors</a></li>
                     <li class="nav-item"><a class="nav-link" href="#appointments">Appointments</a></li>
                     <li class="nav-item"><a class="nav-link" href="#notifications">Notifications</a></li>
@@ -39,76 +39,43 @@
             <p class="lead">
                 Medify is your trusted healthcare companion. Manage your health, book appointments, consult with doctors, and stay up-to-date with your medical needs.
             </p>
-            <a href="#doctors" class="btn btn-outline-primary mt-3">View Doctors</a>
+            <div class="mt-4">
+                <a href="#doctors" class="btn btn-outline-primary mt-3 mx-2">View Doctors</a>
+            </div>
         </div>
     </section>
 
+    <!-- Profile Section -->
     <section id="profile" class="vh-100 d-flex align-items-center bg-light">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-6">
                     <div class="card shadow border-0 rounded">
                         <div class="card-body text-center">
-                            <h2 class="text-primary mb-4">Profile</h2>
-                            <!-- عرض اسم المستخدم -->
+                            <h2 class="text-primary mb-4">Your Profile</h2>
                             <p><strong>Name:</strong> <span id="profile-name">{{ user_name }}</span></p>
-                            <!-- عرض رقم الهاتف -->
+                            <p><strong>Email:</strong> <span id="profile-email">{{ user_email }}</span></p>
                             <p><strong>Phone Number:</strong> <span id="profile-phone">{{ phone_number }}</span></p>
-                            <button id="edit-btn" class="btn btn-outline-primary mt-3" onclick="editProfile()">Edit Profile</button>
 
-                            <!-- Editable Fields -->
-                            <div id="edit-fields" style="display: none;">
-                                <input type="text" id="edit-name" class="form-control mb-3" value="{{ user_name }}" disabled />
-                                <input type="number" id="edit-phone" class="form-control mb-3" placeholder="Enter your phone number" />
-                                <button class="btn btn-primary mt-3" onclick="saveProfile()">Save</button>
-                                <button class="btn btn-outline-danger mt-3" onclick="cancelEdit()">Cancel</button>
-                            </div>
+                            <form action="{{ url_for('update_profile_from_index') }}" method="POST" class="text-start mt-4">
+                                <div class="mb-3">
+                                    <label for="phone" class="form-label">Update Phone Number:</label>
+                                    <input type="text" id="phone" name="phone" class="form-control" placeholder="Enter your phone number" value="{{ phone_number }}">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="full_name" class="form-label">Update Full Name:</label>
+                                    <input type="text" id="full_name" name="full_name" class="form-control" placeholder="Enter your full name" value="{{ full_name }}">
+                                </div>
+                                <div class="text-center">
+                                    <a href="{{ url_for('profile') }}" class="btn btn-outline-primary mt-3">Advanced Profile Settings</a>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-
-    <script>
-        function saveProfile() {
-            const phone = document.getElementById('edit-phone').value.trim();
-
-            if (phone === '') {
-                alert('Please enter a valid phone number!');
-                return;
-            }
-
-            fetch('/indexuser', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    body: new URLSearchParams({
-                        phone: phone
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert(data.message);
-                        document.getElementById('profile-phone').textContent = phone;
-                        document.getElementById('edit-fields').style.display = 'none';
-                        document.getElementById('edit-btn').style.display = 'block';
-                    } else {
-                        alert(data.message);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('An error occurred while saving the phone number.');
-                });
-        }
-    </script>
-
-
-
-
 
     <!-- Doctors Section -->
     <section id="doctors" class="vh-100 bg-light">
@@ -213,42 +180,59 @@
         </div>
     </section>
 
-
-
     <!-- Footer -->
     <footer class="bg-primary text-white text-center py-3">
         &copy; 2024 Medify, All Rights Reserved
     </footer>
 
     <script>
-        function editProfile() {
-            document.getElementById('edit-fields').style.display = 'block';
-            document.getElementById('edit-btn').style.display = 'none';
-        }
+        // Auto-save functionality for profile form
+        document.addEventListener('DOMContentLoaded', function() {
+            const phoneInput = document.getElementById('phone');
+            const fullNameInput = document.getElementById('full_name');
+            const profileForm = document.querySelector('#profile form');
 
-        function saveProfile() {
-            const newName = document.getElementById('edit-name').value.trim();
-            const newEmail = document.getElementById('edit-email').value.trim();
+            // Add event listeners for input change with debounce
+            let saveTimeout;
+            const debounceTime = 1000; // 1 second debounce
 
-            if (newName && newEmail) {
-                document.getElementById('profile-name').textContent = newName;
-                document.getElementById('profile-email').textContent = newEmail;
-                cancelEdit();
-                alert("Profile updated successfully!");
-            } else {
-                alert("Please fill in both Name and Email fields.");
+            if (phoneInput) {
+                phoneInput.addEventListener('input', function() {
+                    clearTimeout(saveTimeout);
+                    saveTimeout = setTimeout(submitForm, debounceTime);
+                });
             }
-        }
 
-        function cancelEdit() {
-            document.getElementById('edit-name').value = document.getElementById('profile-name').textContent;
-            document.getElementById('edit-email').value = document.getElementById('profile-email').textContent;
-            document.getElementById('edit-fields').style.display = 'none';
-            document.getElementById('edit-btn').style.display = 'block';
-        }
-    </script>
-    <script>
-        document.querySelector('form').addEventListener('submit', function(e) {
+            if (fullNameInput) {
+                fullNameInput.addEventListener('input', function() {
+                    clearTimeout(saveTimeout);
+                    saveTimeout = setTimeout(submitForm, debounceTime);
+                });
+            }
+
+            function submitForm() {
+                // Get current form values
+                const formData = new FormData(profileForm);
+
+                // Submit the form data via fetch API
+                fetch(profileForm.action, {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            // Update the displayed profile values on success
+                            document.getElementById('profile-phone').textContent = phoneInput.value;
+                            document.getElementById('profile-name').textContent = fullNameInput.value;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error saving profile:', error);
+                    });
+            }
+        });
+
+        document.querySelector('form[action="/submit_suggestions"]').addEventListener('submit', function(e) {
             e.preventDefault(); // Prevent the default form submission
 
             const formData = new FormData(this);
