@@ -496,6 +496,32 @@ def book_appointment():
     return {"success": False, "message": "User not authenticated"}, 403
 
 
+@app.route('/cancel_appointment', methods=['POST'])
+def cancel_appointment():
+    if 'user_type' in session and session['user_type'] == 'user':
+        data = request.get_json()
+        doctor_name = data.get('doctor')
+        time_slot = data.get('time')
+        user_email = session.get('user_email')
+
+        if not doctor_name or not time_slot:
+            return {"success": False, "message": "Missing appointment details"}, 400
+
+        # Delete appointment from database
+        with sqlite3.connect("users.db") as conn:
+            cursor = conn.cursor()
+            cursor.execute("""
+                DELETE FROM appointments 
+                WHERE user_email = ? AND doctor_name = ? AND time_slot = ?
+            """, (user_email, doctor_name, time_slot))
+            conn.commit()
+            
+            if cursor.rowcount > 0:
+                return {"success": True, "message": "Appointment cancelled successfully"}
+            else:
+                return {"success": False, "message": "Appointment not found"}, 404
+
+    return {"success": False, "message": "User not authenticated"}, 403
 
 
 @app.route('/submit_suggestions', methods=['POST'])
