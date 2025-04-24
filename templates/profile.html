@@ -4,17 +4,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Profile</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+    <title>Medify - User Profile</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin-style.css') }}">
 </head>
 
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
+    <nav class="navbar navbar-expand-lg navbar-dark shadow sticky-top">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="{% if user_type == 'admin' %}{{ url_for('index_admin') }}{% else %}{{ url_for('index_user') }}{% endif %}">
-                {% if user_type == 'admin' %}Admin Dashboard{% else %}Medify{% endif %}
+            <a class="navbar-brand d-flex align-items-center" href="{% if user_type == 'admin' %}{{ url_for('index_admin') }}{% else %}{{ url_for('index_user') }}{% endif %}">
+                <i class="fas fa-heartbeat me-2 pulse"></i>
+                <span class="fw-bold">{% if user_type == 'admin' %}Medify Admin{% else %}Medify{% endif %}</span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -22,74 +25,182 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     {% if user_type == 'admin' %}
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('index_admin') }}">Home</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="{{ url_for('profile') }}">Profile</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('manage_doctors') }}">Manage Doctors</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('manage_appointments') }}">Manage Appointments</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('notifications') }}">Notifications</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('feedback') }}">Feedback</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('manage_users') }}">Users</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('index_admin') }}"><i class="fas fa-home me-1"></i> Home</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="{{ url_for('profile') }}"><i class="fas fa-user-circle me-1"></i> Profile</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('manage_doctors') }}"><i class="fas fa-user-md me-1"></i> Doctors</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('manage_appointments') }}"><i class="fas fa-calendar-check me-1"></i> Appointments</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle position-relative" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-bell me-1"></i> Notifications {% if notifications and notifications|length > 0 %}
+                            <span class="badge rounded-pill bg-danger position-absolute" style="top: 0; right: -5px; font-size: 0.6rem;">{{ notifications|length }}</span> {% endif %}
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-end shadow border-0 p-0" style="width: 300px;">
+                            <div class="dropdown-header bg-primary text-white p-3 d-flex justify-content-between align-items-center">
+                                <h6 class="mb-0 fw-bold">Notifications</h6>
+                                {% if notifications and notifications|length > 0 %}
+                                <span class="badge rounded-pill bg-danger">{{ notifications|length }} New</span> {% endif %}
+                            </div>
+                            <div class="notifications-wrapper p-0">
+                                {% if notifications and notifications|length > 0 %} {% for notification in notifications %}
+                                <div class="dropdown-item notification-item border-bottom p-3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="flex-shrink-0">
+                                            <div class="icon-circle bg-primary-light text-primary">
+                                                <i class="fas fa-bell"></i>
+                                            </div>
+                                        </div>
+                                        <div class="flex-grow-1 ms-3">
+                                            <h6 class="mb-1 fw-bold">{{ notification[0] }}</h6>
+                                            <p class="mb-1 small text-muted">{{ notification[1] }}</p>
+                                            <small class="text-muted">{{ notification[2] }}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %} {% else %}
+                                <div class="dropdown-item text-center p-3">
+                                    <p class="mb-0 text-muted">No new notifications</p>
+                                </div>
+                                {% endif %}
+                            </div>
+                            <a class="dropdown-item text-center p-3 bg-light fw-bold text-primary" href="{{ url_for('notifications') }}">
+                                View All Notifications
+                            </a>
+                        </div>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('feedback') }}"><i class="fas fa-comment-alt me-1"></i> Feedback</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('manage_users') }}"><i class="fas fa-users me-1"></i> Users</a></li>
                     {% else %}
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('index_user') }}">Home</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="{{ url_for('profile') }}">Profile</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('index_user') }}"><i class="fas fa-home me-1"></i> Home</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="{{ url_for('profile') }}"><i class="fas fa-user-circle me-1"></i> Profile</a></li>
                     {% endif %}
-                    <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/logout"><i class="fas fa-sign-out-alt me-1"></i> Logout</a></li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <!-- Profile Section -->
-    <section id="profile" class="vh-100 d-flex align-items-center bg-light">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-md-6">
-                    <div class="card shadow border-0 rounded">
-                        <div class="card-body text-center">
-                            <h2 class="text-primary mb-4">Edit Profile</h2>
-                            <!-- Display Admin Name -->
-                            <p><strong>Name:</strong> <span id="profile-name">{{ user_name }}</span></p>
+    <!-- Main content -->
+    <main>
+        <section class="py-5">
+            <div class="container">
+                <div class="row mb-5">
+                    <div class="col-lg-8 mx-auto text-center" data-aos="fade-up">
+                        <h1 class="section-heading display-5 fw-bold">My Profile</h1>
+                        <p class="lead text-secondary">View and update your profile information</p>
+                    </div>
+                </div>
 
-                            <form method="POST" class="text-start">
-                                <!-- Phone Number field for all users -->
+                <div class="row">
+                    <div class="col-lg-4 mb-4" data-aos="fade-up" data-aos-delay="100">
+                        <div class="card shadow h-100">
+                            <div class="card-body text-center p-4">
                                 <div class="mb-3">
-                                    <label for="phone" class="form-label"><strong>Phone Number:</strong></label>
-                                    <input type="text" name="phone" id="phone" class="form-control" placeholder="Enter phone number" value="{{ phone_number }}" />
+                                    <div class="avatar-wrapper mx-auto">
+                                        <div class="avatar bg-primary-light text-primary rounded-circle mb-3" style="width: 100px; height: 100px; display: flex; align-items: center; justify-content: center; font-size: 3rem;">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                    </div>
+                                    <h4 class="fw-bold">{{ user_name }}</h4>
+                                    <p class="text-muted mb-0">{{ user_type|capitalize }}</p>
                                 </div>
+                                <div class="d-grid gap-2">
+                                    <a href="#profileForm" class="btn btn-primary">
+                                        <i class="fas fa-edit me-2"></i>Edit Profile
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                                {% if user_type == 'user' %}
-                                <!-- Additional fields for regular users -->
-                                <div class="mb-3">
-                                    <label for="full_name" class="form-label"><strong>Full Name:</strong></label>
-                                    <input type="text" name="full_name" id="full_name" class="form-control" placeholder="Enter full name" value="{{ full_name }}" />
-                                </div>
+                    <div class="col-lg-8" data-aos="fade-up" data-aos-delay="200">
+                        <div id="profileForm" class="card shadow">
+                            <div class="card-header bg-white p-4 border-0">
+                                <h4 class="mb-0 text-primary fw-bold"><i class="fas fa-user-cog me-2"></i>Profile Information</h4>
+                            </div>
+                            <div class="card-body p-4">
+                                <form method="POST">
+                                    <!-- Username field (non-editable) -->
+                                    <div class="mb-3">
+                                        <label for="username" class="form-label fw-bold">Username</label>
+                                        <input type="text" class="form-control bg-light" id="username" value="{{ user_name }}" disabled>
+                                    </div>
 
-                                <div class="mb-3">
-                                    <label for="address" class="form-label"><strong>Address:</strong></label>
-                                    <textarea name="address" id="address" class="form-control" placeholder="Enter your address">{{ address }}</textarea>
-                                </div>
+                                    <!-- Phone Number field for all users -->
+                                    <div class="mb-3">
+                                        <label for="phone" class="form-label fw-bold">Phone Number</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                            <input type="text" name="phone" id="phone" class="form-control" placeholder="Enter phone number" value="{{ phone_number }}">
+                                        </div>
+                                    </div>
 
-                                <div class="mb-3">
-                                    <label for="date_of_birth" class="form-label"><strong>Date of Birth:</strong></label>
-                                    <input type="date" name="date_of_birth" id="date_of_birth" class="form-control" value="{{ date_of_birth }}" />
-                                </div>
-                                {% endif %}
+                                    {% if user_type == 'user' %}
+                                    <!-- Additional fields for regular users -->
+                                    <div class="mb-3">
+                                        <label for="full_name" class="form-label fw-bold">Full Name</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                            <input type="text" name="full_name" id="full_name" class="form-control" placeholder="Enter full name" value="{{ full_name }}">
+                                        </div>
+                                    </div>
 
-                                <div class="text-center">
-                                    <button class="btn btn-primary mt-3" type="submit">Save Profile</button>
-                                </div>
-                            </form>
+                                    <div class="mb-3">
+                                        <label for="address" class="form-label fw-bold">Address</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                                            <textarea name="address" id="address" class="form-control" placeholder="Enter your address" rows="3">{{ address }}</textarea>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="date_of_birth" class="form-label fw-bold">Date of Birth</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                                            <input type="date" name="date_of_birth" id="date_of_birth" class="form-control" value="{{ date_of_birth }}">
+                                        </div>
+                                    </div>
+                                    {% endif %}
+
+                                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                                        <button class="btn btn-primary px-4" type="submit">
+                                            <i class="fas fa-save me-2"></i>Save Changes
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+    </main>
 
     <!-- Footer -->
-    <footer class="bg-primary text-white text-center py-3">
-        &copy; 2024 Medify, All Rights Reserved.
+    <footer class="text-white text-center py-4">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                    <h5 class="mb-0"><i class="fas fa-heartbeat me-2"></i>Medify</h5>
+                    <p class="mb-0 small">Healthcare Management System</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <p class="mb-0 small">&copy; 2024 Medify, All Rights Reserved</p>
+                </div>
+            </div>
+        </div>
     </footer>
+
+    <!-- Bootstrap JS and other scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Initialize AOS animations
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true
+        });
+    </script>
 </body>
 
 </html>

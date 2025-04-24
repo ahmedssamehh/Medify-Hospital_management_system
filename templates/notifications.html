@@ -4,130 +4,267 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Send Notifications</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/notification.css') }}">
+    <title>Medify - Notifications</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin-style.css') }}">
 </head>
 
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
+    <nav class="navbar navbar-expand-lg navbar-dark shadow sticky-top">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="{{ url_for('index_admin') }}">Admin Dashboard</a>
+            <a class="navbar-brand fw-bold fs-3" href="{{ url_for('index_admin') }}">
+                <i class="fas fa-heartbeat me-2 pulse"></i>Medify Admin
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('index_admin') }}">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('profile') }}">Profile</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('manage_doctors') }}">Manage Doctors</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('manage_appointments') }}">Manage Appointments</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('notifications') }}">Notifications</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('feedback') }}">Feedback</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('manage_users') }}">Users</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('index_admin') }}"><i class="fas fa-home me-1"></i> Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('profile') }}"><i class="fas fa-user-circle me-1"></i> Profile</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('manage_doctors') }}"><i class="fas fa-user-md me-1"></i> Doctors</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('manage_appointments') }}"><i class="fas fa-calendar-check me-1"></i> Appointments</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="{{ url_for('notifications') }}"><i class="fas fa-bell me-1"></i> Notifications</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('feedback') }}"><i class="fas fa-comment-alt me-1"></i> Feedback</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('manage_users') }}"><i class="fas fa-users me-1"></i> Users</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/logout"><i class="fas fa-sign-out-alt me-1"></i> Logout</a></li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <!-- Notifications Section -->
-    <section class="vh-100 bg-light">
-        <div class="container">
-            <h2 class="text-primary mb-4 text-center">Send Notifications</h2>
+    <!-- Main content -->
+    <main>
+        <section id="notifications" class="py-5">
+            <div class="container">
+                <div class="row mb-5">
+                    <div class="col-lg-8 mx-auto text-center" data-aos="fade-up">
+                        <h1 class="section-heading">Notifications</h1>
+                        <p class="lead text-muted">Manage system notifications and messages</p>
+                    </div>
+                </div>
 
-            <!-- Notification Form -->
-            <div class="form-section mb-5">
-                <h4>Send Notification to a User</h4>
-                <form id="notificationForm">
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <select id="userSelect" class="form-control" required>
-                                <option value="" disabled selected>Select a User</option>
-                                {% for user in users %}
-                                    <option value="{{ user[0] }}">{{ user[0] }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <textarea id="notificationMessage" class="form-control" rows="3" placeholder="Write your notification message here..." required></textarea>
+                <!-- Notification Stats -->
+                <div class="row mb-4">
+                    <div class="col-md-4 mb-3" data-aos="fade-up" data-aos-delay="100">
+                        <div class="card bg-primary text-white shadow h-100">
+                            <div class="card-body d-flex align-items-center">
+                                <div class="rounded-circle bg-white text-primary p-3 me-3">
+                                    <i class="fas fa-bell fa-2x"></i>
+                                </div>
+                                <div>
+                                    <h5 class="card-title mb-0">Total</h5>
+                                    <h2 class="display-6 mb-0">{{ total_notifications }}</h2>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary">Send Notification</button>
-                </form>
-            </div>
+                    <div class="col-md-4 mb-3" data-aos="fade-up" data-aos-delay="200">
+                        <div class="card bg-info text-white shadow h-100">
+                            <div class="card-body d-flex align-items-center">
+                                <div class="rounded-circle bg-white text-info p-3 me-3">
+                                    <i class="fas fa-envelope fa-2x"></i>
+                                </div>
+                                <div>
+                                    <h5 class="card-title mb-0">Unread</h5>
+                                    <h2 class="display-6 mb-0">{{ unread_count }}</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3" data-aos="fade-up" data-aos-delay="300">
+                        <div class="card bg-success text-white shadow h-100">
+                            <div class="card-body d-flex align-items-center">
+                                <div class="rounded-circle bg-white text-success p-3 me-3">
+                                    <i class="fas fa-check-circle fa-2x"></i>
+                                </div>
+                                <div>
+                                    <h5 class="card-title mb-0">Read</h5>
+                                    <h2 class="display-6 mb-0">{{ read_count }}</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-            <!-- Notification History -->
-            <div id="notificationHistory" class="mt-5">
-                <h4>Notification History</h4>
-                <ul class="list-group" id="notificationList">
-                    {% if notifications %}
-                        {% for notification in notifications %}
-                            <li class="list-group-item">
-                                <strong>To:</strong> {{ notification.user_email }} <br>
-                                <strong>Message:</strong> {{ notification.message }} <br>
-                                <strong>Date:</strong> {{ notification.date_sent }}
-                            </li>
-                        {% endfor %}
-                    {% else %}
-                        <li class="list-group-item">No notifications sent yet.</li>
-                    {% endif %}
-                </ul>
+                <!-- Actions Row -->
+                <div class="row mb-4">
+                    <div class="col-12" data-aos="fade-up" data-aos-delay="400">
+                        <div class="card shadow">
+                            <div class="card-body d-flex justify-content-between">
+                                <h5 class="mb-0 d-flex align-items-center">
+                                    <i class="fas fa-bell me-2 text-primary"></i> Notification Center
+                                </h5>
+                                <div>
+                                    <a href="{{ url_for('mark_all_as_read') }}" class="btn btn-primary me-2">
+                                        <i class="fas fa-check-double me-1"></i> Mark All as Read
+                                    </a>
+                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#clearAllModal">
+                                        <i class="fas fa-trash-alt me-1"></i> Clear All
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notification List -->
+                <div class="row">
+                    <div class="col-12" data-aos="fade-up" data-aos-delay="500">
+                        <div class="card shadow">
+                            <div class="card-header bg-primary text-white">
+                                <h4 class="mb-0"><i class="fas fa-list me-2"></i>All Notifications</h4>
+                            </div>
+                            <div class="card-body pb-0">
+                                {% if notifications %}
+                                <div class="notification-list">
+                                    {% for notification in notifications %}
+                                    <div class="notification-item card mb-3 {{ 'border-start border-4 border-primary' if notification[3] == 0 else '' }}">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between">
+                                                <div class="d-flex">
+                                                    {% if notification[3] == 0 %}
+                                                    <span class="notification-status">
+                                                        <i class="fas fa-circle text-primary me-2"></i>
+                                                    </span> {% endif %}
+                                                    <div>
+                                                        <h5 class="notification-title fw-bold mb-1">{{ notification[1] }}</h5>
+                                                        <p class="notification-message mb-1">{{ notification[2] }}</p>
+                                                        <small class="text-muted">{{ notification[4] }}</small>
+                                                    </div>
+                                                </div>
+                                                <div class="notification-actions d-flex">
+                                                    {% if notification[3] == 0 %}
+                                                    <a href="{{ url_for('mark_as_read', id=notification[0]) }}" class="btn btn-outline-primary btn-sm me-2">
+                                                        <i class="fas fa-check"></i> Mark as Read
+                                                    </a>
+                                                    {% endif %}
+                                                    <a href="{{ url_for('delete_notification', id=notification[0]) }}" class="btn btn-outline-danger btn-sm" onclick="return confirm('Are you sure you want to delete this notification?');">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                <div class="text-center p-5">
+                                    <i class="fas fa-bell-slash fa-4x text-muted mb-3"></i>
+                                    <h4 class="text-muted">No notifications available</h4>
+                                    <p class="lead text-muted">You're all caught up! There are no notifications at this time.</p>
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% if notifications %}
+                            <div class="card-footer bg-light">
+                                <nav aria-label="Notification pagination">
+                                    <ul class="pagination justify-content-center mb-0">
+                                        <li class="page-item disabled">
+                                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                                        </li>
+                                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                        <li class="page-item disabled">
+                                            <a class="page-link" href="#">Next</a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Send New Notification Section -->
+                <div class="row mt-4">
+                    <div class="col-12" data-aos="fade-up" data-aos-delay="600">
+                        <div class="card shadow">
+                            <div class="card-header bg-primary text-white">
+                                <h4 class="mb-0"><i class="fas fa-paper-plane me-2"></i>Send New Notification</h4>
+                            </div>
+                            <div class="card-body">
+                                <form action="{{ url_for('send_notification') }}" method="POST">
+                                    <div class="mb-3">
+                                        <label for="recipient" class="form-label">Recipient</label>
+                                        <select class="form-select" id="recipient" name="recipient" required>
+                                            <option value="" selected disabled>Select recipient</option>
+                                            <option value="all_users">All Users</option>
+                                            <option value="all_doctors">All Doctors</option>
+                                            {% for user in all_users %}
+                                            <option value="{{ user[0] }}">{{ user[1] }} ({{ user[2] }})</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="title" class="form-label">Title</label>
+                                        <input type="text" class="form-control" id="title" name="title" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="message" class="form-label">Message</label>
+                                        <textarea class="form-control" id="message" name="message" rows="3" required></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-paper-plane me-1"></i> Send Notification
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Clear All Modal -->
+    <div class="modal fade" id="clearAllModal" tabindex="-1" aria-labelledby="clearAllModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="clearAllModalLabel">Clear All Notifications</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to clear all notifications? This action cannot be undone.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <a href="{{ url_for('clear_all_notifications') }}" class="btn btn-danger">Yes, Clear All</a>
+                </div>
             </div>
         </div>
-    </section>
+    </div>
 
     <!-- Footer -->
-    <footer class="bg-primary text-white text-center py-3">
-        &copy; 2024 Medify, All Rights Reserved.
+    <footer class="text-white text-center py-4">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-md-start mb-3 mb-md-0">
+                    <h5 class="mb-0"><i class="fas fa-heartbeat me-2"></i>Medify</h5>
+                    <p class="mb-0 small">Healthcare Management System</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="mb-0 small">&copy; 2024 Medify, All Rights Reserved</p>
+                </div>
+            </div>
+        </div>
     </footer>
 
-    <!-- JavaScript -->
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- AOS Animation Library -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
     <script>
-        document.getElementById('notificationForm').addEventListener('submit', function (event) {
-            event.preventDefault();
-
-            const userEmail = document.getElementById('userSelect').value;
-            const message = document.getElementById('notificationMessage').value.trim();
-
-            if (userEmail && message) {
-                fetch('/send_notification', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: new URLSearchParams({
-                        user_email: userEmail,
-                        message: message,
-                    }),
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert(data.message);
-                            const notificationList = document.getElementById('notificationList');
-                            const newNotification = document.createElement('li');
-                            newNotification.className = 'list-group-item';
-                            newNotification.innerHTML = `
-                                <strong>To:</strong> ${userEmail} <br>
-                                <strong>Message:</strong> ${message} <br>
-                                <strong>Date:</strong> Just Now
-                            `;
-                            notificationList.appendChild(newNotification);
-                            document.getElementById('notificationMessage').value = '';
-                            document.getElementById('userSelect').value = '';
-                        } else {
-                            alert(data.message);
-                        }
-                    })
-                    .catch(error => {
-                        alert('Error sending notification.');
-                        console.error(error);
-                    });
-            } else {
-                alert('Please select a user and write a message.');
-            }
+        // Initialize AOS animations
+        document.addEventListener('DOMContentLoaded', function() {
+            AOS.init({
+                duration: 800,
+                easing: 'ease-in-out',
+                once: true
+            });
         });
     </script>
 </body>
