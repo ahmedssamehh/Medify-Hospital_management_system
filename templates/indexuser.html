@@ -53,6 +53,8 @@
         body {
             background-color: var(--body-bg);
             color: var(--text-color);
+            font-family: 'Poppins', sans-serif;
+            background: #f8f9fa;
         }
         /* Welcome heading styles */
         
@@ -349,6 +351,51 @@
         .bg-pattern {
             display: none;
             /* Hide old pattern div */
+        }
+        
+        /* Toast styling */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+        }
+        
+        .toast {
+            min-width: 300px;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .toast.show {
+            opacity: 1;
+        }
+        
+        /* Add star rating styling */
+        .star-rating {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: flex-end;
+        }
+        
+        .star-rating input {
+            display: none;
+        }
+        
+        .star-rating label {
+            cursor: pointer;
+            font-size: 24px;
+            color: #ddd;
+            margin-right: 5px;
+            transition: color 0.2s;
+        }
+        
+        .star-rating label:hover,
+        .star-rating label:hover ~ label,
+        .star-rating input:checked ~ label {
+            color: #ffc107;
         }
     </style>
 </head>
@@ -810,6 +857,30 @@
                                 <div class="mb-4">
                                     <h4 class="fw-bold mb-3"><i class="fas fa-comment-alt me-2"></i>Share Your Thoughts</h4>
                                     <p class="text-muted mb-4">We value your feedback. Please share your suggestions to help us improve our services.</p>
+                                    
+                                    <!-- Rating Stars -->
+                                    <div class="mb-3">
+                                        <label class="form-label">Rate your experience</label>
+                                        <div class="rating">
+                                            <div class="star-rating">
+                                                <input type="radio" id="star5" name="rating" value="5" checked />
+                                                <label for="star5" title="5 stars"><i class="fas fa-star"></i></label>
+                                                
+                                                <input type="radio" id="star4" name="rating" value="4" />
+                                                <label for="star4" title="4 stars"><i class="fas fa-star"></i></label>
+                                                
+                                                <input type="radio" id="star3" name="rating" value="3" />
+                                                <label for="star3" title="3 stars"><i class="fas fa-star"></i></label>
+                                                
+                                                <input type="radio" id="star2" name="rating" value="2" />
+                                                <label for="star2" title="2 stars"><i class="fas fa-star"></i></label>
+                                                
+                                                <input type="radio" id="star1" name="rating" value="1" />
+                                                <label for="star1" title="1 star"><i class="fas fa-star"></i></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
                                     <div class="form-floating mb-3">
                                         <textarea id="suggestions-textarea" class="form-control" name="suggestions" rows="5" style="height: 150px" placeholder="Enter your suggestions here..."></textarea>
                                         <label for="suggestions-textarea">Your suggestions</label>
@@ -1057,9 +1128,13 @@
                     const time = document.getElementById('appointment-time').value;
                     const notes = document.getElementById('appointment-notes').value || '';
 
+                    // Validate date and time
                     if (!date || !time) {
-                        showToast('Please select both date and time for your appointment.', 'warning');
-                        return;
+                        // Prevent submission if date or time is missing
+                        e.preventDefault();
+                        // Show error toast notification
+                        showToast('warning', 'Missing Information', 'Please select both date and time for your appointment.');
+                        return false;
                     }
 
                     const timeSlot = `${date} at ${time}`;
@@ -1079,22 +1154,24 @@
                         })
                         .then(response => response.json())
                         .then(data => {
-                            if (data.success) {
-                                showToast(data.message, 'success');
+                            if (data.status === 'success') {
+                                // Success toast
+                                showToast('success', 'Success', data.message);
+                                // Clear the form
+                                document.getElementById('appointment-form').reset();
                                 // Close modal
                                 const modal = bootstrap.Modal.getInstance(appointmentModal);
                                 modal.hide();
-                                // Reload page to show new appointment
-                                setTimeout(() => {
-                                    location.reload();
-                                }, 1500);
+                                // Refresh page to show new appointment
+                                setTimeout(() => { window.location.reload() }, 1500);
                             } else {
-                                showToast(data.message, 'error');
+                                // Error toast
+                                showToast('error', 'Error', data.message);
                             }
                         })
                         .catch(error => {
                             console.error('Error:', error);
-                            showToast('There was an error booking the appointment.', 'error');
+                            showToast('error', 'Error', 'There was an error booking the appointment.');
                         });
                 });
             }
@@ -1115,18 +1192,17 @@
                     })
                     .then(response => response.json())
                     .then(data => {
-                        if (data.success) {
-                            showToast(data.message, 'success');
-                            setTimeout(() => {
-                                location.reload();
-                            }, 1500);
+                        if (data.status === 'success') {
+                            showToast('success', 'Cancelled', data.message);
+                            // Refresh page to update appointment list
+                            setTimeout(() => { window.location.reload() }, 1500);
                         } else {
-                            showToast(data.message, 'error');
+                            showToast('error', 'Error', data.message);
                         }
                     })
                     .catch(error => {
                         console.error('Error:', error);
-                        showToast('There was an error cancelling the appointment.', 'error');
+                        showToast('error', 'Error', 'There was an error cancelling the appointment.');
                     });
             }
         }
@@ -1191,64 +1267,51 @@
             }
         }
 
-        // Toast notification system
-        function showToast(message, type = 'info') {
-            // Create toast container if it doesn't exist
-            let toastContainer = document.querySelector('.toast-container');
+        // Toast notification function
+        function showToast(type, title, message) {
+            const toastContainer = document.getElementById('toastContainer');
             if (!toastContainer) {
-                toastContainer = document.createElement('div');
-                toastContainer.className = 'toast-container position-fixed bottom-0 end-0 p-3';
-                document.body.appendChild(toastContainer);
+                const container = document.createElement('div');
+                container.id = 'toastContainer';
+                container.className = 'toast-container';
+                document.body.appendChild(container);
             }
-
-            // Set toast color based on type
-            let bgColor = 'bg-primary';
-            let icon = '<i class="fas fa-info-circle me-2"></i>';
-
-            switch (type) {
-                case 'success':
-                    bgColor = 'bg-success';
-                    icon = '<i class="fas fa-check-circle me-2"></i>';
-                    break;
-                case 'warning':
-                    bgColor = 'bg-warning';
-                    icon = '<i class="fas fa-exclamation-triangle me-2"></i>';
-                    break;
-                case 'error':
-                    bgColor = 'bg-danger';
-                    icon = '<i class="fas fa-times-circle me-2"></i>';
-                    break;
-                default:
-                    break;
-            }
-
-            // Create toast element
+            
             const toastId = 'toast-' + Date.now();
-            const toastHtml = `
-                <div id="${toastId}" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-                    <div class="toast-header ${bgColor} text-white">
-                        ${icon} Notification
-                        <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-                    </div>
-                    <div class="toast-body">
-                        ${message}
-                    </div>
+            const toastEl = document.createElement('div');
+            toastEl.className = 'toast';
+            toastEl.id = toastId;
+            
+            let bgClass = 'bg-primary';
+            let icon = '<i class="fas fa-info-circle"></i>';
+            
+            if (type === 'success') {
+                bgClass = 'bg-success';
+                icon = '<i class="fas fa-check-circle"></i>';
+            } else if (type === 'error') {
+                bgClass = 'bg-danger';
+                icon = '<i class="fas fa-exclamation-circle"></i>';
+            } else if (type === 'warning') {
+                bgClass = 'bg-warning';
+                icon = '<i class="fas fa-exclamation-triangle"></i>';
+            }
+            
+            toastEl.innerHTML = `
+                <div class="toast-header ${bgClass} text-white">
+                    ${icon} <strong class="me-auto ms-2">${title}</strong>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+                </div>
+                <div class="toast-body">
+                    ${message}
                 </div>
             `;
-
-            // Add toast to container
-            toastContainer.insertAdjacentHTML('beforeend', toastHtml);
-
-            // Initialize and show the toast
-            const toastElement = document.getElementById(toastId);
-            const toast = new bootstrap.Toast(toastElement, {
-                delay: 3000
-            });
+            
+            document.getElementById('toastContainer').appendChild(toastEl);
+            const toast = new bootstrap.Toast(toastEl, { autohide: true, delay: 5000 });
             toast.show();
-
-            // Remove toast after it's hidden
-            toastElement.addEventListener('hidden.bs.toast', function() {
-                toastElement.remove();
+            
+            toastEl.addEventListener('hidden.bs.toast', function() {
+                this.remove();
             });
         }
 
@@ -1287,7 +1350,7 @@
                     })
                     .then(response => {
                         if (response.ok) {
-                            showToast('Profile updated successfully', 'success');
+                            showToast('success', 'Profile Updated', 'Profile updated successfully');
 
                             // Update displayed values
                             const userName = document.querySelector('h3.mb-0');
@@ -1298,35 +1361,39 @@
                     })
                     .catch(error => {
                         console.error('Error saving profile:', error);
-                        showToast('Error updating profile', 'error');
+                        showToast('error', 'Update Failed', 'Error updating profile');
                     });
             }
         });
 
         // Feedback form submission
         document.querySelector('form[action="/submit_suggestions"]').addEventListener('submit', function(e) {
-            e.preventDefault(); // Prevent the default form submission
-
+            e.preventDefault();
             const formData = new FormData(this);
-            const url = this.action;
+            const rating = document.querySelector('input[name="rating"]:checked').value;
+            formData.append('rating', rating);
+            
+            // Get the suggestions value and add it as comment for submit_feedback endpoint
+            const suggestions = formData.get('suggestions');
+            formData.append('comment', suggestions);
 
-            fetch(url, {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        showToast(data.message, 'success');
-                        this.reset(); // Clear the form fields
-                    } else {
-                        showToast(data.message, 'error');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    showToast('An error occurred. Please try again.', 'error');
-                });
+            fetch('/submit_feedback', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success === true) {
+                    showToast('success', 'Thank you!', data.message);
+                    this.reset();
+                } else {
+                    showToast('error', 'Error', data.message);
+                }
+            })
+            .catch(error => {
+                showToast('error', 'Error', 'An error occurred while submitting your feedback.');
+                console.error('Error:', error);
+            });
         });
     </script>
 </body>

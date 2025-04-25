@@ -602,6 +602,16 @@ def send_notifications():
             cursor.execute("SELECT id, email, full_name FROM users")
             all_users = cursor.fetchall()
             
+            # Format user data for display
+            formatted_users = []
+            for user in all_users:
+                user_id = user[0]
+                email = user[1]
+                full_name = user[2] or email.split('@')[0]
+                # Format as username@user.com
+                display_name = f"{full_name}...{email}"
+                formatted_users.append((user_id, email, display_name))
+            
             # Check if notifications table has title column
             cursor.execute("PRAGMA table_info(notifications)")
             columns = [column[1] for column in cursor.fetchall()]
@@ -627,7 +637,7 @@ def send_notifications():
             now = datetime.now()
             
         return render_template('notifications.html', 
-                              all_users=all_users,
+                              all_users=formatted_users,
                               recent_notifications=recent_notifications,
                               now=now)
     return redirect(url_for('login'))
