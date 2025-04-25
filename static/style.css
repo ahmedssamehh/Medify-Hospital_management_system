@@ -1,3 +1,4 @@
+/* General Styles */
 body {
     margin: 0;
     padding: 0;
@@ -6,7 +7,7 @@ body {
     align-items: center;
     min-height: 100vh;
     font-family: 'Jost', sans-serif;
-    background: linear-gradient(to bottom, #007bff, #61a9f5, #ffffff);
+    background: linear-gradient(to bottom, #0d6efd, #61a9f5, #ffffff);
 }
 
 .main {
@@ -17,6 +18,7 @@ body {
     background: url("https://doc-08-2c-docs.googleusercontent.com/docs/securesc/68c90smiglihng9534mvqmq1946dmis5/fo0picsp1nhiucmc0l25s29respgpr4j/1631524275000/03522360960922298374/03522360960922298374/1Sx0jhdpEpnNIydS4rnN4kHSJtU1EyWka?e=view&authuser=0&nonce=gcrocepgbb17m&user=03522360960922298374&hash=tfhgbs86ka6divo3llbvp93mg4csvb38") no-repeat center/ cover;
     border-radius: 10px;
     box-shadow: 5px 20px 50px #bbbaba;
+    position: relative;
 }
 
 #chk {
@@ -28,7 +30,6 @@ body {
     width: 100%;
     height: 100%;
 }
-
 
 /* /sign up word/ */
 
@@ -71,7 +72,7 @@ button {
     justify-content: center;
     display: block;
     color: #fff;
-    background: #4486cd;
+    background: #0d6efd;
     font-size: 1em;
     font-weight: bold;
     margin-top: 30px;
@@ -83,7 +84,7 @@ button {
 }
 
 button:hover {
-    background: #007bff;
+    background: #0b5ed7;
 }
 
 .login {
@@ -95,7 +96,7 @@ button:hover {
 }
 
 .login label {
-    color: #529eef;
+    color: #0d6efd;
     transform: scale(.6);
 }
 
@@ -109,4 +110,282 @@ button:hover {
 
 #chk:checked~.signup label {
     transform: scale(.6);
+}
+
+/* Auth Container Styles */
+.auth-container {
+    width: 400px;
+    padding: 20px;
+}
+
+.auth-card {
+    background: rgba(255, 255, 255, 0.97);
+    border-radius: 20px;
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.25);
+    padding: 30px;
+    overflow: hidden;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+/* Add a subtle hover effect to the card */
+.auth-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* Brand Styles */
+.auth-header {
+    margin-bottom: 25px;
+}
+
+.brand-name {
+    color: #0d6efd;
+    font-weight: 700;
+    font-size: 2.5rem;
+    margin-bottom: 5px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.brand-tagline {
+    color: #555;
+    font-size: 0.9rem;
+}
+
+/* Tab Switch Styles */
+.tab-switch {
+    margin-bottom: 25px;
+}
+
+.tab-labels {
+    display: flex;
+    justify-content: space-around;
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.tab-labels:after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    height: 3px;
+    width: 45%;
+    background: #0d6efd;
+    left: 0;
+    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    border-radius: 2px;
+}
+
+#chk:checked ~ .tab-labels:after {
+    left: 50%;
+}
+
+.tab-labels label {
+    color: #777;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex: 1;
+    text-align: center;
+    padding: 8px 0;
+}
+
+.tab-labels .signup-label {
+    color: #0d6efd;
+}
+
+.tab-labels .login-label {
+    color: #777;
+}
+
+#chk:checked ~ .tab-labels .signup-label {
+    color: #777;
+}
+
+#chk:checked ~ .tab-labels .login-label {
+    color: #0d6efd;
+}
+
+/* Form Styles */
+.signup-form, .login-form {
+    transition: all 0.5s ease;
+}
+
+.signup-form {
+    display: block;
+}
+
+.login-form {
+    display: none;
+}
+
+#chk:checked ~ .signup-form {
+    display: none;
+}
+
+#chk:checked ~ .login-form {
+    display: block;
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.input-icon {
+    position: absolute;
+    left: 15px;
+    top: 13px;
+    color: #0d6efd;
+    font-size: 1rem;
+}
+
+.input-group input,
+.input-group select {
+    width: 100%;
+    padding: 12px 20px 12px 45px;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background-color: #f9f9f9;
+    color: #333;
+    box-sizing: border-box;
+}
+
+.input-group input:focus,
+.input-group select:focus {
+    outline: none;
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.2);
+    background-color: #fff;
+}
+
+.input-group input::placeholder {
+    color: #aaa;
+}
+
+.auth-button {
+    width: 100%;
+    background-color: #0d6efd;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.auth-button:hover {
+    background-color: #0b5ed7;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(13, 110, 253, 0.2);
+}
+
+.auth-button:active {
+    transform: translateY(0);
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.remember-me input[type="checkbox"] {
+    margin-right: 10px;
+    width: auto;
+}
+
+.remember-me label {
+    color: #555;
+    font-size: 0.9rem;
+    cursor: pointer;
+    margin: 0;
+}
+
+/* Auth links style */
+.auth-links {
+    margin-top: 15px;
+}
+
+.auth-links a {
+    color: #0d6efd;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.auth-links a:hover {
+    color: #0b5ed7;
+    text-decoration: underline;
+}
+
+/* Footer Styles */
+.auth-footer {
+    font-size: 0.8rem;
+    color: #888;
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* Responsive Styles */
+@media (max-width: 480px) {
+    .auth-container {
+        width: 90%;
+        padding: 10px;
+    }
+    
+    .auth-card {
+        padding: 20px;
+    }
+    
+    .brand-name {
+        font-size: 2rem;
+    }
+}
+
+/* Additional Animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.login-form, .signup-form {
+    animation: fadeIn 0.5s ease forwards;
+}
+
+/* Slight pulse animation on the brand icon */
+@keyframes heartBeat {
+    0% { transform: scale(1); }
+    14% { transform: scale(1.1); }
+    28% { transform: scale(1); }
+    42% { transform: scale(1.1); }
+    70% { transform: scale(1); }
+}
+
+.fa-heartbeat {
+    animation: heartBeat 2s infinite;
+}
+
+/* Add at the end of the file */
+@keyframes heartbeat {
+    0% { transform: scale(1); }
+    14% { transform: scale(1.2); }
+    28% { transform: scale(1); }
+    42% { transform: scale(1.2); }
+    70% { transform: scale(1); }
+}
+
+.icon-heart {
+    color: #dc3545;
+    margin-right: 8px;
+    animation: heartbeat 2s infinite;
 }

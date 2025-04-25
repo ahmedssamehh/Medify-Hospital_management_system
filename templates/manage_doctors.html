@@ -8,222 +8,17 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin-style.css') }}">
-    <style>
-         :root {
-            --primary-color: #0078d7;
-            --secondary-color: #4eb1f5;
-            --accent-color: #5dc1a9;
-            --light-bg: #f5f9fc;
-            --text-color: #333333;
-            --text-muted: #6c757d;
-            --card-bg: #ffffff;
-            --body-bg: #f8f9fa;
-            --border-color: rgba(0, 0, 0, 0.1);
-            --navbar-bg: linear-gradient(to right, #0078d7, #5dc1a9);
-        }
-        
-        body {
-            background-color: var(--body-bg);
-            color: var(--text-color);
-        }
-        /* Navbar styling */
-        
-        .navbar {
-            background: var(--navbar-bg);
-            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
-        }
-        /* Section heading styling */
-        
-        .section-heading {
-            position: relative;
-            color: var(--text-color);
-            margin-bottom: 1.5rem;
-            font-weight: 700;
-        }
-        
-        .section-heading::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 50px;
-            height: 3px;
-            background: linear-gradient(to right, var(--primary-color), var(--accent-color));
-        }
-        /* Stats cards */
-        
-        .icon-circle {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-        
-        .bg-primary-light {
-            background-color: rgba(0, 120, 215, 0.1);
-        }
-        
-        .bg-info-light {
-            background-color: rgba(23, 162, 184, 0.1);
-        }
-        
-        .bg-success-light {
-            background-color: rgba(40, 167, 69, 0.1);
-        }
-        
-        .stats-label {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .stats-value {
-            font-weight: 700;
-            font-size: 1.8rem;
-            margin: 0;
-            color: var(--text-color);
-        }
-        /* Card hover effects */
-        
-        .card {
-            border: none;
-            border-radius: 10px;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            overflow: hidden;
-        }
-        
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        }
-        /* Table styling */
-        
-        .table {
-            border-collapse: separate;
-            border-spacing: 0 5px;
-        }
-        
-        .table thead th {
-            border-bottom: none;
-            background-color: #f8f9fa;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            font-size: 0.8rem;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-            padding: 1rem;
-        }
-        
-        .table tbody tr {
-            margin-bottom: 10px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-            transition: all 0.2s ease;
-        }
-        
-        .table tbody tr:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            background-color: #fafafa;
-        }
-        
-        .table td,
-        .table th {
-            padding: 1rem;
-            vertical-align: middle;
-        }
-        /* Button styling */
-        
-        .btn-primary,
-        .btn-info,
-        .btn-danger,
-        .btn-success {
-            border-radius: 8px;
-            font-weight: 500;
-            letter-spacing: 0.3px;
-            padding: 0.5rem 1.2rem;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-sm {
-            border-radius: 6px;
-            padding: 0.25rem 0.5rem;
-        }
-        
-        .btn-pill {
-            border-radius: 50px;
-        }
-        
-        .rating {
-            color: #ffc107;
-        }
-        /* Notification styling */
-        
-        .notifications-wrapper {
-            max-height: 300px;
-            overflow-y: auto;
-            scrollbar-width: thin;
-            scrollbar-color: var(--primary-color) #f0f0f0;
-        }
-        
-        .notifications-wrapper::-webkit-scrollbar {
-            width: 6px;
-        }
-        
-        .notifications-wrapper::-webkit-scrollbar-track {
-            background: #f0f0f0;
-            border-radius: 10px;
-        }
-        
-        .notifications-wrapper::-webkit-scrollbar-thumb {
-            background: var(--primary-color);
-            border-radius: 10px;
-        }
-        /* Search and filter improvements */
-        
-        #searchDoctor:focus {
-            box-shadow: none;
-            border-color: var(--primary-color);
-        }
-        
-        .form-select:focus {
-            box-shadow: none;
-            border-color: var(--primary-color);
-        }
-        /* Animation for icons */
-        
-        .pulse {
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.1);
-            }
-            100% {
-                transform: scale(1);
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/unified-style.css') }}">
+    <!-- Google Font: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark shadow sticky-top">
         <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="{{ url_for('index_admin') }}">
-                <i class="fas fa-heartbeat me-2 pulse"></i>
-                <span class="fw-bold">Medify Admin</span>
+            <a class="navbar-brand" href="{{ url_for('index_admin') }}">
+                <i class="fas fa-heartbeat me-2 pulse"></i>Medify Admin
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -234,44 +29,7 @@
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('profile') }}"><i class="fas fa-user-circle me-1"></i> Profile</a></li>
                     <li class="nav-item"><a class="nav-link active" href="{{ url_for('manage_doctors') }}"><i class="fas fa-user-md me-1"></i> Doctors</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('manage_appointments') }}"><i class="fas fa-calendar-check me-1"></i> Appointments</a></li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle position-relative" href="#" role="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-bell me-1"></i> Notifications {% if notifications and notifications|length > 0 %}
-                            <span class="badge rounded-pill bg-danger position-absolute" style="top: 0; right: -5px; font-size: 0.6rem;">{{ notifications|length }}</span> {% endif %}
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-end shadow border-0 p-0" style="width: 300px;">
-                            <div class="dropdown-header bg-primary text-white p-3 d-flex justify-content-between align-items-center">
-                                <h6 class="mb-0 fw-bold">Notifications</h6>
-                                {% if notifications and notifications|length > 0 %}
-                                <span class="badge rounded-pill bg-danger">{{ notifications|length }} New</span> {% endif %}
-                            </div>
-                            <div class="notifications-wrapper p-0">
-                                {% if notifications and notifications|length > 0 %} {% for notification in notifications %}
-                                <div class="dropdown-item notification-item border-bottom p-3">
-                                    <div class="d-flex align-items-center">
-                                        <div class="flex-shrink-0">
-                                            <div class="icon-circle bg-primary-light text-primary">
-                                                <i class="fas fa-bell"></i>
-                                            </div>
-                                        </div>
-                                        <div class="flex-grow-1 ms-3">
-                                            <h6 class="mb-1 fw-bold">{{ notification[0] }}</h6>
-                                            <p class="mb-1 small text-muted">{{ notification[1] }}</p>
-                                            <small class="text-muted">{{ notification[2] }}</small>
-                                        </div>
-                                    </div>
-                                </div>
-                                {% endfor %} {% else %}
-                                <div class="dropdown-item text-center p-3">
-                                    <p class="mb-0 text-muted">No new notifications</p>
-                                </div>
-                                {% endif %}
-                            </div>
-                            <a class="dropdown-item text-center p-3 bg-light fw-bold text-primary" href="{{ url_for('notifications') }}">
-                                View All Notifications
-                            </a>
-                        </div>
-                    </li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('send_notifications') }}"><i class="fas fa-bell me-1"></i> Notifications</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('feedback') }}"><i class="fas fa-comment-alt me-1"></i> Feedback</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('manage_users') }}"><i class="fas fa-users me-1"></i> Users</a></li>
                     <li class="nav-item"><a class="nav-link" href="/logout"><i class="fas fa-sign-out-alt me-1"></i> Logout</a></li>
@@ -280,21 +38,22 @@
         </div>
     </nav>
 
-    <!-- Main content -->
+    <!-- Main Content -->
     <main>
-        <section id="doctors" class="py-5">
+        <section class="py-5">
             <div class="container">
-                <div class="row mb-5">
+                <!-- Page Header -->
+                <div class="row mb-4">
                     <div class="col-lg-8 mx-auto text-center" data-aos="fade-up">
-                        <h1 class="section-heading display-5 fw-bold">Manage Doctors</h1>
-                        <p class="lead text-secondary">Add, edit, or remove doctors from the system</p>
+                        <h1 class="section-heading">Manage Doctors</h1>
+                        <p class="lead text-muted">Add, edit, or remove doctors from the system.</p>
                     </div>
                 </div>
 
-                <!-- Doctor Stats -->
+                <!-- Stats Cards -->
                 <div class="row mb-4">
-                    <div class="col-md-4 mb-3" data-aos="fade-up" data-aos-delay="100">
-                        <div class="card h-100">
+                    <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="100">
+                        <div class="card shadow h-100">
                             <div class="card-body p-4">
                                 <div class="d-flex align-items-center">
                                     <div class="icon-circle bg-primary-light p-3 me-3">
@@ -306,15 +65,35 @@
                                     </div>
                                 </div>
                                 <div class="mt-3">
-                                    <div class="progress" style="height: 8px; border-radius: 4px;">
+                                    <div class="progress" style="height: 8px;">
                                         <div class="progress-bar bg-primary" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4 mb-3" data-aos="fade-up" data-aos-delay="200">
-                        <div class="card h-100">
+                    <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="200">
+                        <div class="card shadow h-100">
+                            <div class="card-body p-4">
+                                <div class="d-flex align-items-center">
+                                    <div class="icon-circle bg-success-light p-3 me-3">
+                                        <i class="fas fa-check-circle fa-2x text-success"></i>
+                                    </div>
+                                    <div>
+                                        <p class="stats-label mb-0">Available Now</p>
+                                        <h2 class="stats-value">{{ available_now }}</h2>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar bg-success" role="progressbar" style="width: {{ (available_now / doctors|length * 100) if doctors|length > 0 else 0 }}%" aria-valuenow="{{ (available_now / doctors|length * 100) if doctors|length > 0 else 0 }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4" data-aos="fade-up" data-aos-delay="300">
+                        <div class="card shadow h-100">
                             <div class="card-body p-4">
                                 <div class="d-flex align-items-center">
                                     <div class="icon-circle bg-info-light p-3 me-3">
@@ -326,29 +105,8 @@
                                     </div>
                                 </div>
                                 <div class="mt-3">
-                                    <div class="progress" style="height: 8px; border-radius: 4px;">
-                                        <div class="progress-bar bg-info" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 mb-3" data-aos="fade-up" data-aos-delay="300">
-                        <div class="card h-100">
-                            <div class="card-body p-4">
-                                <div class="d-flex align-items-center">
-                                    <div class="icon-circle bg-success-light p-3 me-3">
-                                        <i class="fas fa-calendar-check fa-2x text-success"></i>
-                                    </div>
-                                    <div>
-                                        <p class="stats-label mb-0">Available Now</p>
-                                        <h2 class="stats-value">{{ available_now }}</h2>
-                                    </div>
-                                </div>
-                                <div class="mt-3">
-                                    <div class="progress" style="height: 8px; border-radius: 4px;">
-                                        <div class="progress-bar bg-success" role="progressbar" style="width: {{ (available_now / doctors|length * 100) if doctors|length > 0 else 0 }}%" aria-valuenow="{{ (available_now / doctors|length * 100) if doctors|length > 0 else 0 }}" aria-valuemin="0"
-                                            aria-valuemax="100"></div>
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar bg-info" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                                     </div>
                                 </div>
                             </div>
@@ -356,330 +114,153 @@
                     </div>
                 </div>
 
-                <!-- Actions Row -->
+                <!-- Actions and Filters -->
                 <div class="row mb-4">
-                    <div class="col-12" data-aos="fade-up" data-aos-delay="400">
-                        <div class="card">
-                            <div class="card-body d-flex justify-content-between align-items-center p-4">
-                                <h5 class="mb-0 d-flex align-items-center fw-bold">
-                                    <i class="fas fa-user-md me-2 text-primary"></i> Doctors Management
-                                </h5>
-                                <div>
-                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addDoctorModal">
-                                        <i class="fas fa-plus me-2"></i> Add New Doctor
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Search & Filter Row -->
-                <div class="row mb-4">
-                    <div class="col-12" data-aos="fade-up" data-aos-delay="450">
-                        <div class="card">
-                            <div class="card-body p-4">
-                                <div class="row">
-                                    <div class="col-md-6 mb-3 mb-md-0">
+                    <div class="col-md-8 mb-3" data-aos="fade-up" data-aos-delay="400">
+                        <div class="card shadow">
+                            <div class="card-body p-3">
+                                <div class="row g-2">
+                                    <div class="col-md-5">
                                         <div class="input-group">
-                                            <span class="input-group-text bg-primary text-white border-0"><i class="fas fa-search"></i></span>
-                                            <input type="text" class="form-control border-start-0" id="searchDoctor" placeholder="Search by name, specialty, or email...">
+                                            <span class="input-group-text bg-light"><i class="fas fa-search"></i></span>
+                                            <input type="text" class="form-control" id="searchDoctor" placeholder="Search by name or specialty...">
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="d-flex justify-content-md-end">
-                                            <select class="form-select me-2" style="max-width: 200px;" id="filterSpecialty">
-                                                <option value="">All Specialties</option>
-                                                {% for specialty in specialties %}
+                                    <div class="col-md-4">
+                                        <select class="form-select" id="filterSpecialty">
+                                            <option value="">All Specialties</option>
+                                            {% for specialty in specialties %}
                                                 <option value="{{ specialty }}">{{ specialty }}</option>
-                                                {% endfor %}
-                                            </select>
-                                            <select class="form-select" style="max-width: 200px;" id="filterStatus">
-                                                <option value="">All Status</option>
-                                                <option value="available">Available</option>
-                                                <option value="unavailable">Unavailable</option>
-                                            </select>
-                                        </div>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <select class="form-select" id="filterAvailability">
+                                            <option value="">All Availability</option>
+                                            <option value="yes">Available</option>
+                                            <option value="no">Not Available</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div class="col-md-4 mb-3 text-end" data-aos="fade-up" data-aos-delay="400">
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addDoctorModal">
+                            <i class="fas fa-plus me-2"></i>Add New Doctor
+                        </button>
                     </div>
                 </div>
 
                 <!-- Doctors List -->
-                <div class="row">
-                    <div class="col-12" data-aos="fade-up" data-aos-delay="500">
-                        <div class="card">
-                            <div class="card-header bg-white p-4 border-0">
-                                <h5 class="mb-0 text-primary fw-bold"><i class="fas fa-list me-2"></i>Doctor Listing</h5>
+                <div class="row" id="doctorCards" data-aos="fade-up" data-aos-delay="500">
+                    {% for doctor in doctors %}
+                    <div class="col-md-4 mb-4 doctor-card" 
+                        data-name="{{ doctor[0]|lower }}" 
+                        data-specialty="{{ doctor[1]|lower }}" 
+                        data-availability="{{ doctor[5]|lower }}">
+                        <div class="card shadow h-100">
+                            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                                <h5 class="card-title mb-0 text-primary">Dr. {{ doctor[0] }}</h5>
+                                <div class="rating">
+                                    {% for i in range(doctor[2]|int) %}
+                                    <i class="fas fa-star"></i>
+                                    {% endfor %}
+                                    {% for i in range(5 - doctor[2]|int) %}
+                                    <i class="far fa-star"></i>
+                                    {% endfor %}
+                                </div>
                             </div>
-                            <div class="card-body p-0">
-                                <div class="table-responsive">
-                                    <table class="table table-hover align-middle mb-0" id="doctorsTable">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col">#</th>
-                                                <th scope="col">Photo</th>
-                                                <th scope="col">Name</th>
-                                                <th scope="col">Specialty</th>
-                                                <th scope="col">Email</th>
-                                                <th scope="col">Status</th>
-                                                <th scope="col">Rating</th>
-                                                <th scope="col">Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for doctor in doctors %}
-                                            <tr>
-                                                <th scope="row">{{ loop.index }}</th>
-                                                <td>
-                                                    <img src="{{ doctor[3] }}" alt="{{ doctor[0] }}" class="rounded-circle" width="50" height="50" style="object-fit: cover; border: 2px solid #e0e0e0;">
-                                                </td>
-                                                <td class="fw-semibold">{{ doctor[0] }}</td>
-                                                <td><span class="badge rounded-pill bg-info text-white px-3 py-2">{{ doctor[1] }}</span></td>
-                                                <td>{{ doctor[9] }}</td>
-                                                <td>
-                                                    {% if doctor[5] == 'yes' %}
-                                                    <span class="badge rounded-pill bg-success px-3 py-2">Available</span> {% else %}
-                                                    <span class="badge rounded-pill bg-danger px-3 py-2">Unavailable</span> {% endif %}
-                                                </td>
-                                                <td>
-                                                    <div class="rating">
-                                                        {% for i in range(doctor[2]|int) %}
-                                                        <i class="fas fa-star"></i> {% endfor %} {% for i in range(5 - doctor[2]|int) %}
-                                                        <i class="far fa-star"></i> {% endfor %}
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <button class="btn btn-sm btn-primary btn-pill me-1" data-bs-toggle="modal" data-bs-target="#editDoctorModal{{ doctor[0]|replace(' ', '') }}">
-                                                        <i class="fas fa-edit"></i>
-                                                    </button>
-                                                    <button class="btn btn-sm btn-danger btn-pill" data-bs-toggle="modal" data-bs-target="#deleteDoctorModal{{ doctor[0]|replace(' ', '') }}">
-                                                        <i class="fas fa-trash"></i>
-                                                    </button>
-                                                </td>
-                                            </tr>
-
-                                            <!-- View Doctor Modal -->
-                                            <div class="modal fade" id="viewDoctorModal{{ doctor[0]|replace(' ', '') }}" tabindex="-1" aria-labelledby="viewDoctorModalLabel{{ doctor[0]|replace(' ', '') }}" aria-hidden="true">
-                                                <div class="modal-dialog modal-dialog-centered">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header bg-info text-white">
-                                                            <h5 class="modal-title" id="viewDoctorModalLabel{{ doctor[0]|replace(' ', '') }}">Doctor Details</h5>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                        </div>
-                                                        <div class="modal-body p-4">
-                                                            <div class="text-center mb-4">
-                                                                <img src="{{ doctor[3] }}" alt="{{ doctor[0] }}" class="rounded-circle mb-3" width="120" height="120" style="object-fit: cover; border: 3px solid #e0e0e0;">
-                                                                <h4 class="mb-0 fw-bold">{{ doctor[0] }}</h4>
-                                                                <p class="text-muted mb-0">{{ doctor[1] }}</p>
-                                                                <div class="rating my-2">
-                                                                    {% for i in range(doctor[2]|int) %}
-                                                                    <i class="fas fa-star"></i> {% endfor %} {% for i in range(5 - doctor[2]|int) %}
-                                                                    <i class="far fa-star"></i> {% endfor %}
-                                                                </div>
-                                                            </div>
-                                                            <div class="row g-3">
-                                                                <div class="col-md-6">
-                                                                    <div class="mb-3">
-                                                                        <label class="form-label small text-muted">Email</label>
-                                                                        <div class="form-control-plaintext">{{ doctor[9] }}</div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-6">
-                                                                    <div class="mb-3">
-                                                                        <label class="form-label small text-muted">Status</label>
-                                                                        <div class="form-control-plaintext">
-                                                                            {% if doctor[5] == 'yes' %}
-                                                                            <span class="badge rounded-pill bg-success px-3 py-2">Available</span> {% else %}
-                                                                            <span class="badge rounded-pill bg-danger px-3 py-2">Unavailable</span> {% endif %}
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-12">
-                                                                    <div class="mb-3">
-                                                                        <label class="form-label small text-muted">Description</label>
-                                                                        <div class="form-control-plaintext">{{ doctor[4] }}</div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-6">
-                                                                    <div class="mb-3">
-                                                                        <label class="form-label small text-muted">Phone</label>
-                                                                        <div class="form-control-plaintext">{{ doctor[6] }}</div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-6">
-                                                                    <div class="mb-3">
-                                                                        <label class="form-label small text-muted">Experience</label>
-                                                                        <div class="form-control-plaintext">{{ doctor[8] }} years</div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <!-- Edit Doctor Modal -->
-                                            <div class="modal fade" id="editDoctorModal{{ doctor[0]|replace(' ', '') }}" tabindex="-1" aria-labelledby="editDoctorModalLabel{{ doctor[0]|replace(' ', '') }}" aria-hidden="true">
-                                                <div class="modal-dialog modal-dialog-centered">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header bg-primary text-white">
-                                                            <h5 class="modal-title" id="editDoctorModalLabel{{ doctor[0]|replace(' ', '') }}">Edit Doctor</h5>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                        </div>
-                                                        <form action="/update_doctor" method="post">
-                                                            <div class="modal-body p-4">
-                                                                <input type="hidden" name="id" value="{{ doctor[7] }}">
-                                                                <div class="mb-3">
-                                                                    <label for="name{{ doctor[0]|replace(' ', '') }}" class="form-label">Name</label>
-                                                                    <input type="text" class="form-control" id="name{{ doctor[0]|replace(' ', '') }}" name="name" value="{{ doctor[0] }}" required>
-                                                                </div>
-                                                                <div class="mb-3">
-                                                                    <label for="specialty{{ doctor[0]|replace(' ', '') }}" class="form-label">Specialty</label>
-                                                                    <select class="form-select" id="specialty{{ doctor[0]|replace(' ', '') }}" name="specialty" required>
-                                                                        {% for specialty in specialties %}
-                                                                        <option value="{{ specialty }}" {% if specialty == doctor[1] %}selected{% endif %}>{{ specialty }}</option>
-                                                                        {% endfor %}
-                                                                    </select>
-                                                                </div>
-                                                                <div class="mb-3">
-                                                                    <label for="rating{{ doctor[0]|replace(' ', '') }}" class="form-label">Rating</label>
-                                                                    <select class="form-select" id="rating{{ doctor[0]|replace(' ', '') }}" name="rating" required>
-                                                                        {% for i in range(1, 6) %}
-                                                                        <option value="{{ i }}" {% if i == doctor[2]|int %}selected{% endif %}>{{ i }} Stars</option>
-                                                                        {% endfor %}
-                                                                    </select>
-                                                                </div>
-                                                                <div class="mb-3">
-                                                                    <label for="image{{ doctor[0]|replace(' ', '') }}" class="form-label">Image URL</label>
-                                                                    <input type="text" class="form-control" id="image{{ doctor[0]|replace(' ', '') }}" name="img" value="{{ doctor[3] }}" required>
-                                                                </div>
-                                                                <div class="mb-3">
-                                                                    <label for="desc{{ doctor[0]|replace(' ', '') }}" class="form-label">Description</label>
-                                                                    <textarea class="form-control" id="desc{{ doctor[0]|replace(' ', '') }}" name="desc" rows="3" required>{{ doctor[4] }}</textarea>
-                                                                </div>
-                                                                <div class="mb-3">
-                                                                    <label for="available{{ doctor[0]|replace(' ', '') }}" class="form-label">Availability Status</label>
-                                                                    <select class="form-select" id="available{{ doctor[0]|replace(' ', '') }}" name="available" required>
-                                                                        <option value="yes" {% if doctor[5] == 'yes' %}selected{% endif %}>Available</option>
-                                                                        <option value="no" {% if doctor[5] == 'no' %}selected{% endif %}>Unavailable</option>
-                                                                    </select>
-                                                                </div>
-                                                                <div class="mb-3">
-                                                                    <label for="phone{{ doctor[0]|replace(' ', '') }}" class="form-label">Phone</label>
-                                                                    <input type="text" class="form-control" id="phone{{ doctor[0]|replace(' ', '') }}" name="phone" value="{{ doctor[6] }}" required>
-                                                                </div>
-                                                                <div class="mb-3">
-                                                                    <label for="experience{{ doctor[0]|replace(' ', '') }}" class="form-label">Experience (years)</label>
-                                                                    <input type="number" class="form-control" id="experience{{ doctor[0]|replace(' ', '') }}" name="experience" value="{{ doctor[8] }}" required>
-                                                                </div>
-                                                                <div class="mb-3">
-                                                                    <label for="email{{ doctor[0]|replace(' ', '') }}" class="form-label">Email</label>
-                                                                    <input type="email" class="form-control" id="email{{ doctor[0]|replace(' ', '') }}" name="email" value="{{ doctor[9] }}" required>
-                                                                </div>
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                                <button type="submit" class="btn btn-primary">Save Changes</button>
-                                                            </div>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <!-- Delete Doctor Modal -->
-                                            <div class="modal fade" id="deleteDoctorModal{{ doctor[0]|replace(' ', '') }}" tabindex="-1" aria-labelledby="deleteDoctorModalLabel{{ doctor[0]|replace(' ', '') }}" aria-hidden="true">
-                                                <div class="modal-dialog modal-dialog-centered modal-sm">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header bg-danger text-white">
-                                                            <h5 class="modal-title" id="deleteDoctorModalLabel{{ doctor[0]|replace(' ', '') }}">Confirm Delete</h5>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                        </div>
-                                                        <div class="modal-body p-4 text-center">
-                                                            <i class="fas fa-exclamation-triangle text-warning fa-3x mb-3"></i>
-                                                            <h5>Are you sure?</h5>
-                                                            <p>Do you really want to delete the doctor <strong>{{ doctor[0] }}</strong>? This process cannot be undone.</p>
-                                                        </div>
-                                                        <div class="modal-footer justify-content-center">
-                                                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                            <a href="/delete_doctor/{{ doctor[7] }}" class="btn btn-danger">Delete</a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
+                            <div class="card-body">
+                                <div class="text-center mb-3">
+                                    <img src="{{ doctor[3] }}" alt="Doctor" class="rounded-circle img-fluid" style="width: 120px; height: 120px; object-fit: cover;">
+                                    <div class="mt-2">
+                                        <span class="badge rounded-pill {% if doctor[5] == 'yes' %}bg-success{% else %}bg-danger{% endif %} mb-2">
+                                            {% if doctor[5] == 'yes' %}Available{% else %}Not Available{% endif %}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="doctor-info">
+                                    <p class="mb-2"><i class="fas fa-stethoscope me-2 text-primary"></i>{{ doctor[1] }}</p>
+                                    <p class="mb-2"><i class="fas fa-phone me-2 text-primary"></i>{{ doctor[6] }}</p>
+                                    <p class="mb-2"><i class="fas fa-envelope me-2 text-primary"></i>{{ doctor[9] }}</p>
+                                    <p class="mb-2"><i class="fas fa-clock me-2 text-primary"></i>{{ doctor[8] }} years of experience</p>
+                                    <p class="mb-3"><i class="fas fa-file-medical-alt me-2 text-primary"></i>{{ doctor[4] }}</p>
+                                </div>
+                                <div class="d-flex justify-content-between mt-3">
+                                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editDoctorModal{{ doctor[7] }}">
+                                        <i class="fas fa-edit me-1"></i>Edit
+                                    </button>
+                                    <a href="{{ url_for('delete_doctor', id=doctor[7]) }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this doctor?')">
+                                        <i class="fas fa-trash-alt me-1"></i>Delete
+                                    </a>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    {% endfor %}
+                </div>
+
+                <!-- No Results Message -->
+                <div id="noResults" class="text-center py-5 d-none">
+                    <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                    <h3 class="text-muted">No doctors found matching your search criteria</h3>
+                    <p class="text-muted">Try adjusting your search or filter options</p>
                 </div>
             </div>
         </section>
     </main>
 
     <!-- Add Doctor Modal -->
-    <div class="modal fade" id="addDoctorModal" tabindex="-1" aria-labelledby="addDoctorModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+    <div class="modal fade" id="addDoctorModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="addDoctorModalLabel">Add New Doctor</h5>
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-user-md me-2"></i>Add New Doctor</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="/add_doctor" method="post">
-                    <div class="modal-body p-4">
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Name</label>
-                            <input type="text" class="form-control" id="name" name="name" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="specialty" class="form-label">Specialty</label>
-                            <select class="form-select" id="specialty" name="specialty" required>
-                                {% for specialty in specialties %}
-                                <option value="{{ specialty }}">{{ specialty }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="rating" class="form-label">Rating</label>
-                            <select class="form-select" id="rating" name="rating" required>
-                                {% for i in range(1, 6) %}
-                                <option value="{{ i }}">{{ i }} Stars</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="image" class="form-label">Image URL</label>
-                            <input type="text" class="form-control" id="image" name="img" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="desc" class="form-label">Description</label>
-                            <textarea class="form-control" id="desc" name="desc" rows="3" required></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="available" class="form-label">Availability Status</label>
-                            <select class="form-select" id="available" name="available" required>
-                                <option value="yes">Available</option>
-                                <option value="no">Unavailable</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label for="phone" class="form-label">Phone</label>
-                            <input type="text" class="form-control" id="phone" name="phone" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="experience" class="form-label">Experience (years)</label>
-                            <input type="number" class="form-control" id="experience" name="experience" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <input type="email" class="form-control" id="email" name="email" required>
+                <form action="{{ url_for('add_doctor') }}" method="POST">
+                    <div class="modal-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="name" class="form-label">Full Name</label>
+                                <input type="text" class="form-control" id="name" name="name" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="specialty" class="form-label">Specialty</label>
+                                <input type="text" class="form-control" id="specialty" name="specialty" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="rating" class="form-label">Rating (1-5)</label>
+                                <input type="number" class="form-control" id="rating" name="rating" min="1" max="5" value="5" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="experience" class="form-label">Experience (years)</label>
+                                <input type="number" class="form-control" id="experience" name="experience" min="0" value="0" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="available" class="form-label">Availability</label>
+                                <select class="form-select" id="available" name="available" required>
+                                    <option value="yes">Available</option>
+                                    <option value="no">Not Available</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="phone" class="form-label">Phone Number</label>
+                                <input type="text" class="form-control" id="phone" name="phone">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="email" class="form-label">Email Address</label>
+                                <input type="email" class="form-control" id="email" name="email">
+                            </div>
+                            <div class="col-12">
+                                <label for="img" class="form-label">Profile Image URL</label>
+                                <input type="text" class="form-control" id="img" name="img" value="/static/images/doctor.jpg">
+                            </div>
+                            <div class="col-12">
+                                <label for="desc" class="form-label">Description</label>
+                                <textarea class="form-control" id="desc" name="desc" rows="3"></textarea>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -691,70 +272,133 @@
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-light py-4 mt-5">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6 text-center text-md-start">
-                    <p class="mb-0">&copy; {{ now.year }} Medify. All rights reserved.</p>
+    <!-- Edit Doctor Modals -->
+    {% for doctor in doctors %}
+    <div class="modal fade" id="editDoctorModal{{ doctor[7] }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-edit me-2"></i>Edit Doctor: Dr. {{ doctor[0] }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="col-md-6 text-center text-md-end">
-                    <p class="mb-0">Designed by <span class="text-primary">Medify Team</span></p>
-                </div>
+                <form action="{{ url_for('update_doctor') }}" method="POST">
+                    <div class="modal-body">
+                        <input type="hidden" name="id" value="{{ doctor[7] }}">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="editName{{ doctor[7] }}" class="form-label">Full Name</label>
+                                <input type="text" class="form-control" id="editName{{ doctor[7] }}" name="name" value="{{ doctor[0] }}" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="editSpecialty{{ doctor[7] }}" class="form-label">Specialty</label>
+                                <input type="text" class="form-control" id="editSpecialty{{ doctor[7] }}" name="specialty" value="{{ doctor[1] }}" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="editRating{{ doctor[7] }}" class="form-label">Rating (1-5)</label>
+                                <input type="number" class="form-control" id="editRating{{ doctor[7] }}" name="rating" min="1" max="5" value="{{ doctor[2] }}" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="editExperience{{ doctor[7] }}" class="form-label">Experience (years)</label>
+                                <input type="number" class="form-control" id="editExperience{{ doctor[7] }}" name="experience" min="0" value="{{ doctor[8] }}" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="editAvailable{{ doctor[7] }}" class="form-label">Availability</label>
+                                <select class="form-select" id="editAvailable{{ doctor[7] }}" name="available" required>
+                                    <option value="yes" {% if doctor[5] == 'yes' %}selected{% endif %}>Available</option>
+                                    <option value="no" {% if doctor[5] == 'no' %}selected{% endif %}>Not Available</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="editPhone{{ doctor[7] }}" class="form-label">Phone Number</label>
+                                <input type="text" class="form-control" id="editPhone{{ doctor[7] }}" name="phone" value="{{ doctor[6] }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="editEmail{{ doctor[7] }}" class="form-label">Email Address</label>
+                                <input type="email" class="form-control" id="editEmail{{ doctor[7] }}" name="email" value="{{ doctor[9] }}">
+                            </div>
+                            <div class="col-12">
+                                <label for="editImg{{ doctor[7] }}" class="form-label">Profile Image URL</label>
+                                <input type="text" class="form-control" id="editImg{{ doctor[7] }}" name="img" value="{{ doctor[3] }}">
+                            </div>
+                            <div class="col-12">
+                                <label for="editDesc{{ doctor[7] }}" class="form-label">Description</label>
+                                <textarea class="form-control" id="editDesc{{ doctor[7] }}" name="desc" rows="3">{{ doctor[4] }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
             </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    <!-- Footer -->
+    <footer class="py-3 mt-auto">
+        <div class="container">
+            <p class="m-0 text-center text-white">&copy; 2023 Medify Hospital Management System</p>
         </div>
     </footer>
 
-    <!-- JavaScript dependencies -->
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        // Initialize AOS animation
+        // Initialize AOS
         AOS.init({
             duration: 800,
-            easing: 'ease-in-out',
             once: true
         });
 
-        // Filter functionality
+        // Search and filter functionality
         document.addEventListener('DOMContentLoaded', function() {
-            const searchInput = document.getElementById('searchDoctor');
+            const searchDoctor = document.getElementById('searchDoctor');
             const filterSpecialty = document.getElementById('filterSpecialty');
-            const filterStatus = document.getElementById('filterStatus');
-            const doctorRows = document.querySelectorAll('#doctorsTable tbody tr');
+            const filterAvailability = document.getElementById('filterAvailability');
+            const doctorCards = document.querySelectorAll('.doctor-card');
+            const noResults = document.getElementById('noResults');
 
+            // Function to filter doctors
             function filterDoctors() {
-                const searchTerm = searchInput.value.toLowerCase();
-                const specialtyFilter = filterSpecialty.value.toLowerCase();
-                const statusFilter = filterStatus.value.toLowerCase();
-
-                doctorRows.forEach(row => {
-                    const doctorName = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
-                    const doctorSpecialty = row.querySelector('td:nth-child(4) .badge').textContent.toLowerCase();
-                    const doctorEmail = row.querySelector('td:nth-child(5)').textContent.toLowerCase();
-                    const doctorStatus = row.querySelector('td:nth-child(6) .badge').textContent.toLowerCase();
-
-                    const matchesSearch = doctorName.includes(searchTerm) ||
-                        doctorSpecialty.includes(searchTerm) ||
-                        doctorEmail.includes(searchTerm);
-
-                    const matchesSpecialty = specialtyFilter === '' || doctorSpecialty === specialtyFilter;
-
-                    const matchesStatus = statusFilter === '' ||
-                        (statusFilter === 'available' && doctorStatus.toLowerCase() === 'available') ||
-                        (statusFilter === 'unavailable' && doctorStatus.toLowerCase() === 'unavailable');
-
-                    if (matchesSearch && matchesSpecialty && matchesStatus) {
-                        row.style.display = '';
+                const searchTerm = searchDoctor.value.toLowerCase();
+                const specialty = filterSpecialty.value.toLowerCase();
+                const availability = filterAvailability.value.toLowerCase();
+                
+                let visibleCount = 0;
+                
+                doctorCards.forEach(card => {
+                    const doctorName = card.dataset.name;
+                    const doctorSpecialty = card.dataset.specialty;
+                    const doctorAvailability = card.dataset.availability;
+                    
+                    // Fix search match logic to handle partial strings
+                    const nameMatch = doctorName.includes(searchTerm);
+                    const specialtyMatch = specialty === '' || doctorSpecialty === specialty;
+                    const availabilityMatch = availability === '' || doctorAvailability === availability;
+                    
+                    if (nameMatch && specialtyMatch && availabilityMatch) {
+                        card.classList.remove('d-none');
+                        visibleCount++;
                     } else {
-                        row.style.display = 'none';
+                        card.classList.add('d-none');
                     }
                 });
+                
+                // Show or hide no results message
+                if (visibleCount === 0) {
+                    noResults.classList.remove('d-none');
+                } else {
+                    noResults.classList.add('d-none');
+                }
             }
-
-            searchInput.addEventListener('input', filterDoctors);
+            
+            // Add event listeners
+            searchDoctor.addEventListener('input', filterDoctors);
             filterSpecialty.addEventListener('change', filterDoctors);
-            filterStatus.addEventListener('change', filterDoctors);
+            filterAvailability.addEventListener('change', filterDoctors);
         });
     </script>
 </body>

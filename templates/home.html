@@ -8,7 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin-style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/unified-style.css') }}">
     <!-- Google Font: Poppins -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -29,44 +29,7 @@
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('profile') }}"><i class="fas fa-user-circle me-1"></i> Profile</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('manage_doctors') }}"><i class="fas fa-user-md me-1"></i> Doctors</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('manage_appointments') }}"><i class="fas fa-calendar-check me-1"></i> Appointments</a></li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-bell me-1"></i> Notifications {% if notifications and notifications|length > 0 %}
-                            <span class="badge rounded-pill bg-danger">{{ notifications|length }}</span> {% endif %}
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-end shadow border-0 p-0">
-                            <div class="dropdown-header bg-primary text-white p-3">
-                                <h6 class="mb-0">Notifications</h6>
-                                {% if notifications and notifications|length > 0 %}
-                                <span class="badge rounded-pill bg-danger">{{ notifications|length }} New</span> {% endif %}
-                            </div>
-                            <div class="notifications-wrapper p-0" style="max-height: 300px; overflow-y: auto;">
-                                {% if notifications and notifications|length > 0 %} {% for notification in notifications %}
-                                <div class="dropdown-item notification-item border-bottom p-3">
-                                    <div class="d-flex align-items-center">
-                                        <div class="flex-shrink-0">
-                                            <div class="icon-circle bg-primary-light text-primary">
-                                                <i class="fas fa-bell"></i>
-                                            </div>
-                                        </div>
-                                        <div class="flex-grow-1 ms-3">
-                                            <h6 class="mb-1 fw-bold">{{ notification[0] }}</h6>
-                                            <p class="mb-1 small text-muted">{{ notification[1] }}</p>
-                                            <small class="text-muted">{{ notification[2] }}</small>
-                                        </div>
-                                    </div>
-                                </div>
-                                {% endfor %} {% else %}
-                                <div class="dropdown-item text-center p-3">
-                                    <p class="mb-0 text-muted">No new notifications</p>
-                                </div>
-                                {% endif %}
-                            </div>
-                            <a class="dropdown-item text-center p-3 bg-light fw-bold" href="{{ url_for('notifications') }}">
-                                View All Notifications
-                            </a>
-                        </div>
-                    </li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('send_notifications') }}"><i class="fas fa-bell me-1"></i> Notifications</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('feedback') }}"><i class="fas fa-comment-alt me-1"></i> Feedback</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('manage_users') }}"><i class="fas fa-users me-1"></i> Users</a></li>
                     <li class="nav-item"><a class="nav-link" href="/logout"><i class="fas fa-sign-out-alt me-1"></i> Logout</a></li>
@@ -82,7 +45,7 @@
                 <div class="row mb-4">
                     <div class="col-lg-8 mx-auto text-center" data-aos="fade-up">
                         <h1 class="section-heading">Admin Dashboard</h1>
-                        <p class="lead text-secondary">Welcome, {{ session['username'] }}! Manage your hospital system efficiently.</p>
+                        <p class="lead text-secondary">Welcome, {{ admin_name }}! Manage your hospital system efficiently.</p>
                     </div>
                 </div>
 
@@ -171,7 +134,7 @@
                 </div>
 
                 <!-- Recent Activity -->
-                <div class="row mb-4">
+                <div class="row">
                     <div class="col-lg-8 mb-4" data-aos="fade-up" data-aos-delay="500">
                         <div class="card shadow h-100">
                             <div class="card-header bg-white">
@@ -195,11 +158,17 @@
                                                 <td>Dr. {{ appointment[1] }}</td>
                                                 <td>{{ appointment[2] }}</td>
                                                 <td>
-                                                    {% if appointment[3] == 'Pending' %}
-                                                    <span class="badge rounded-pill bg-warning">Pending</span> {% elif appointment[3] == 'Confirmed' %}
-                                                    <span class="badge rounded-pill bg-success">Confirmed</span> {% elif appointment[3] == 'Completed' %}
-                                                    <span class="badge rounded-pill bg-primary">Completed</span> {% else %}
-                                                    <span class="badge rounded-pill bg-danger">Cancelled</span> {% endif %}
+                                                    {% if appointment[3] == 'pending' %}
+                                                    <span class="badge rounded-pill bg-warning">Pending</span> 
+                                                    {% elif appointment[3] == 'confirmed' %}
+                                                    <span class="badge rounded-pill bg-success">Confirmed</span> 
+                                                    {% elif appointment[3] == 'completed' %}
+                                                    <span class="badge rounded-pill bg-info">Completed</span> 
+                                                    {% elif appointment[3] == 'cancelled' %}
+                                                    <span class="badge rounded-pill bg-danger">Cancelled</span>
+                                                    {% else %}
+                                                    <span class="badge rounded-pill bg-secondary">Unknown</span>
+                                                    {% endif %}
                                                 </td>
                                             </tr>
                                             {% endfor %}
@@ -207,92 +176,46 @@
                                     </table>
                                 </div>
                             </div>
-                            <div class="card-footer bg-white text-center py-3">
-                                <a href="{{ url_for('manage_appointments') }}" class="btn btn-sm btn-primary">View All Appointments</a>
-                            </div>
                         </div>
                     </div>
-                    <div class="col-lg-4" data-aos="fade-up" data-aos-delay="600">
+                    
+                    <div class="col-lg-4 mb-4" data-aos="fade-up" data-aos-delay="600">
                         <div class="card shadow h-100">
                             <div class="card-header bg-white">
-                                <h5 class="mb-0 text-primary"><i class="fas fa-bell me-2"></i>Recent Notifications</h5>
-                            </div>
-                            <div class="card-body p-0">
-                                <div class="notifications-list" style="max-height: 350px; overflow-y: auto;">
-                                    {% if notifications and notifications|length > 0 %} {% for notification in notifications[:5] %}
-                                    <div class="notification-item border-bottom p-3">
-                                        <div class="d-flex">
-                                            <div class="flex-shrink-0">
-                                                <div class="icon-circle bg-primary-light text-primary">
-                                                    <i class="fas fa-bell"></i>
-                                                </div>
-                                            </div>
-                                            <div class="flex-grow-1 ms-3">
-                                                <h6 class="mb-1 fw-bold">{{ notification[0] }}</h6>
-                                                <p class="mb-1 small">{{ notification[1] }}</p>
-                                                <small class="text-muted">{{ notification[2] }}</small>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    {% endfor %} {% else %}
-                                    <div class="text-center p-4">
-                                        <i class="fas fa-bell-slash fa-3x text-muted mb-3"></i>
-                                        <p class="mb-0">No new notifications</p>
-                                    </div>
-                                    {% endif %}
-                                </div>
-                            </div>
-                            <div class="card-footer bg-white text-center py-3">
-                                <a href="{{ url_for('notifications') }}" class="btn btn-sm btn-primary">View All Notifications</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Quick Actions -->
-                <div class="row" data-aos="fade-up" data-aos-delay="700">
-                    <div class="col-12">
-                        <div class="card shadow">
-                            <div class="card-header bg-white">
-                                <h5 class="mb-0 text-primary"><i class="fas fa-bolt me-2"></i>Quick Actions</h5>
+                                <h5 class="mb-0 text-primary"><i class="fas fa-info-circle me-2"></i>Quick Info</h5>
                             </div>
                             <div class="card-body">
-                                <div class="row g-3">
-                                    <div class="col-md-3">
-                                        <a href="{{ url_for('manage_doctors') }}" class="text-decoration-none">
-                                            <div class="action-card bg-primary-light text-primary text-center p-4 rounded h-100">
-                                                <i class="fas fa-user-md fa-3x mb-3"></i>
-                                                <h5>Manage Doctors</h5>
-                                                <p class="mb-0 small">Add or edit doctor profiles</p>
-                                            </div>
-                                        </a>
+                                <div class="d-flex align-items-center mb-4">
+                                    <div class="flex-shrink-0">
+                                        <div class="icon-circle bg-primary-light">
+                                            <i class="fas fa-calendar-day text-primary"></i>
+                                        </div>
                                     </div>
-                                    <div class="col-md-3">
-                                        <a href="{{ url_for('manage_appointments') }}" class="text-decoration-none">
-                                            <div class="action-card bg-success-light text-success text-center p-4 rounded h-100">
-                                                <i class="fas fa-calendar-plus fa-3x mb-3"></i>
-                                                <h5>Schedule</h5>
-                                                <p class="mb-0 small">Create new appointments</p>
-                                            </div>
-                                        </a>
+                                    <div class="ms-3">
+                                        <h6 class="mb-1 fw-bold">Current Date</h6>
+                                        <p class="text-muted mb-0">{{ now.strftime('%d %B, %Y') }}</p>
                                     </div>
-                                    <div class="col-md-3">
-                                        <a href="{{ url_for('manage_users') }}" class="text-decoration-none">
-                                            <div class="action-card bg-info-light text-info text-center p-4 rounded h-100">
-                                                <i class="fas fa-user-plus fa-3x mb-3"></i>
-                                                <h5>Add User</h5>
-                                                <p class="mb-0 small">Register new patients</p>
-                                            </div>
-                                        </a>
+                                </div>
+                                <div class="d-flex align-items-center mb-4">
+                                    <div class="flex-shrink-0">
+                                        <div class="icon-circle bg-success-light">
+                                            <i class="fas fa-user-md text-success"></i>
+                                        </div>
                                     </div>
-                                    <div class="col-md-3">
-                                        <a href="{{ url_for('feedback') }}" class="text-decoration-none">
-                                            <div class="action-card bg-warning-light text-warning text-center p-4 rounded h-100">
-                                                <i class="fas fa-comment-dots fa-3x mb-3"></i>
-                                                <h5>View Feedback</h5>
-                                                <p class="mb-0 small">Check patient reviews</p>
-                                            </div>
-                                        </a>
+                                    <div class="ms-3">
+                                        <h6 class="mb-1 fw-bold">System Administrator</h6>
+                                        <p class="text-muted mb-0">{{ admin_name }}</p>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <div class="flex-shrink-0">
+                                        <div class="icon-circle bg-info-light">
+                                            <i class="fas fa-database text-info"></i>
+                                        </div>
+                                    </div>
+                                    <div class="ms-3">
+                                        <h6 class="mb-1 fw-bold">System Status</h6>
+                                        <p class="text-muted mb-0"><span class="badge bg-success">Online</span></p>
                                     </div>
                                 </div>
                             </div>
@@ -304,24 +227,16 @@
     </main>
 
     <!-- Footer -->
-    <footer class="py-4 text-white">
+    <footer class="py-3 mt-auto">
         <div class="container">
-            <div class="row">
-                <div class="col-md-6 text-center text-md-start">
-                    <p class="mb-0">&copy; 2023 Medify. All rights reserved.</p>
-                </div>
-                <div class="col-md-6 text-center text-md-end">
-                    <p class="mb-0">Designed with <i class="fas fa-heart text-danger"></i> by Medify Team</p>
-                </div>
-            </div>
+            <p class="m-0 text-center text-white">&copy; {{ now.year }} Medify Hospital Management System</p>
         </div>
     </footer>
 
-    <!-- JavaScript -->
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        // Initialize AOS
         AOS.init({
             duration: 800,
             once: true

@@ -4,72 +4,191 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Users</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/manage_users.css') }}">
+    <title>Medify - Manage Users</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/unified-style.css') }}">
 </head>
 
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
+    <nav class="navbar navbar-expand-lg navbar-dark shadow sticky-top">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="{{ url_for('index_admin') }}">Admin Dashboard</a>
+            <a class="navbar-brand d-flex align-items-center" href="{{ url_for('index_admin') }}">
+                <i class="fas fa-heartbeat me-2 pulse"></i>
+                <span class="fw-bold">Medify Admin</span>
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('index_admin') }}">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('profile') }}">Profile</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('manage_doctors') }}">Manage Doctors</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('manage_appointments') }}">Manage Appointments</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('notifications') }}">Notifications</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('feedback') }}">Feedback</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('manage_users') }}">Users</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('index_admin') }}"><i class="fas fa-home me-1"></i> Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('profile') }}"><i class="fas fa-user-circle me-1"></i> Profile</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('manage_doctors') }}"><i class="fas fa-user-md me-1"></i> Doctors</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('manage_appointments') }}"><i class="fas fa-calendar-check me-1"></i> Appointments</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('send_notifications') }}"><i class="fas fa-bell me-1"></i> Notifications</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('feedback') }}"><i class="fas fa-comment-alt me-1"></i> Feedback</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="{{ url_for('manage_users') }}"><i class="fas fa-users me-1"></i> Users</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/logout"><i class="fas fa-sign-out-alt me-1"></i> Logout</a></li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <!-- Manage Users Section -->
-    <section class="vh-100 bg-light">
-        <div class="container">
-            <h2 class="text-primary mb-4 text-center">Manage Users</h2>
+    <!-- Main content -->
+    <main>
+        <section class="py-5">
+            <div class="container">
+                <div class="row mb-5">
+                    <div class="col-lg-8 mx-auto text-center" data-aos="fade-up">
+                        <h1 class="section-heading display-5 fw-bold">Manage Users</h1>
+                        <p class="lead text-secondary">View and manage system users</p>
+                    </div>
+                </div>
 
-            <!-- Users Table -->
-            <table class="table table-bordered table-striped">
-                <thead class="table-primary">
-                    <tr>
-                        <th>ID</th>
-                        <th>Email</th>
-                        <th>Phone Number</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="usersTable">
-                    {% for user in users %}
-                    <tr>
-                        <td>{{ user[0] }}</td>
-                        <td>{{ user[1] }}</td>
-                        <td>{{ user[2] if user[2] else 'N/A' }}</td>
-                        <td>
-                            <form action="{{ url_for('delete_user') }}" method="POST" style="display:inline;">
-                                <input type="hidden" name="user_id" value="{{ user[0] }}">
-                                <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                            </form>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                <!-- Users Table -->
+                <div class="card shadow border-0 overflow-hidden" data-aos="fade-up" data-aos-delay="200">
+                    <div class="card-header bg-white p-4 border-0">
+                        <h4 class="mb-0 text-primary fw-bold"><i class="fas fa-users me-2"></i>All Users</h4>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Email</th>
+                                    <th>Full Name</th>
+                                    <th>Phone Number</th>
+                                    <th>Address</th>
+                                    <th>Date of Birth</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if users and users|length > 0 %}
+                                {% for user in users %}
+                                <tr>
+                                    <td>{{ user[0] }}</td>
+                                    <td>{{ user[1] }}</td>
+                                    <td>{{ user[2] if user[2] else 'Not provided' }}</td>
+                                    <td>{{ user[5] if user[5] else 'Not provided' }}</td>
+                                    <td>{{ user[3] if user[3] else 'Not provided' }}</td>
+                                    <td>{{ user[4] if user[4] else 'Not provided' }}</td>
+                                    <td>
+                                        <form action="{{ url_for('delete_user') }}" method="POST" class="d-inline">
+                                            <input type="hidden" name="user_id" value="{{ user[0] }}">
+                                            <button type="submit" class="btn btn-sm btn-danger">
+                                                <i class="fas fa-trash me-1"></i>Delete
+                                            </button>
+                                        </form>
+                                        <button class="btn btn-sm btn-primary send-notification-btn" data-bs-toggle="modal" data-bs-target="#notificationModal" data-email="{{ user[1] }}">
+                                            <i class="fas fa-bell me-1"></i>Notify
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-center py-4">No users available</td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Send Notification Modal -->
+    <div class="modal fade" id="notificationModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title"><i class="fas fa-bell me-2"></i>Send Notification</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="notificationForm">
+                        <input type="hidden" id="notifyUserEmail" name="notifyUserEmail">
+                        <div class="mb-3">
+                            <label for="notificationMessage" class="form-label">Message</label>
+                            <textarea class="form-control" id="notificationMessage" rows="4" required></textarea>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Send Notification</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-    </section>
+    </div>
 
     <!-- Footer -->
-    <footer class="bg-primary text-white text-center py-3">
-        &copy; 2024 Medify, All Rights Reserved.
+    <footer class="text-white text-center py-4">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                    <h5 class="mb-0"><i class="fas fa-heartbeat me-2"></i>Medify</h5>
+                    <p class="mb-0 small">Healthcare Management System</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <p class="mb-0 small">&copy; 2024 Medify, All Rights Reserved</p>
+                </div>
+            </div>
+        </div>
     </footer>
+
+    <!-- JS Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Initialize AOS animations
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true
+        });
+
+        // Handle notification form
+        $(document).ready(function() {
+            $('.send-notification-btn').click(function() {
+                var userEmail = $(this).data('email');
+                $('#notifyUserEmail').val(userEmail);
+            });
+
+            $('#notificationForm').submit(function(e) {
+                e.preventDefault();
+                
+                var userEmail = $('#notifyUserEmail').val();
+                var message = $('#notificationMessage').val();
+                
+                $.ajax({
+                    url: '{{ url_for("send_notification") }}',
+                    type: 'POST',
+                    data: {
+                        user_email: userEmail,
+                        message: message
+                    },
+                    success: function(response) {
+                        if(response.success) {
+                            alert('Notification sent successfully!');
+                            $('#notificationModal').modal('hide');
+                            $('#notificationMessage').val('');
+                        } else {
+                            alert('Error: ' + response.message);
+                        }
+                    },
+                    error: function() {
+                        alert('An error occurred while sending the notification.');
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>

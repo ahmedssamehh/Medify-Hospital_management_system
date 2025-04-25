@@ -8,14 +8,16 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin-style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/unified-style.css') }}">
+    <!-- Google Font: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark shadow sticky-top">
         <div class="container">
-            <a class="navbar-brand fw-bold fs-3" href="{{ url_for('index_admin') }}">
+            <a class="navbar-brand" href="{{ url_for('index_admin') }}">
                 <i class="fas fa-heartbeat me-2 pulse"></i>Medify Admin
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -27,7 +29,7 @@
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('profile') }}"><i class="fas fa-user-circle me-1"></i> Profile</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('manage_doctors') }}"><i class="fas fa-user-md me-1"></i> Doctors</a></li>
                     <li class="nav-item"><a class="nav-link active" href="{{ url_for('manage_appointments') }}"><i class="fas fa-calendar-check me-1"></i> Appointments</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url_for('notifications') }}"><i class="fas fa-bell me-1"></i> Notifications</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url_for('send_notifications') }}"><i class="fas fa-bell me-1"></i> Notifications</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('feedback') }}"><i class="fas fa-comment-alt me-1"></i> Feedback</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ url_for('manage_users') }}"><i class="fas fa-users me-1"></i> Users</a></li>
                     <li class="nav-item"><a class="nav-link" href="/logout"><i class="fas fa-sign-out-alt me-1"></i> Logout</a></li>
@@ -36,180 +38,290 @@
         </div>
     </nav>
 
-    <!-- Main content -->
+    <!-- Main Content -->
     <main>
-        <section id="manage-appointments" class="py-5">
+        <section class="py-5">
             <div class="container">
-                <div class="row mb-5">
+                <!-- Page Header -->
+                <div class="row mb-4">
                     <div class="col-lg-8 mx-auto text-center" data-aos="fade-up">
                         <h1 class="section-heading">Manage Appointments</h1>
-                        <p class="lead text-muted">View and manage all appointments in the system</p>
+                        <p class="lead text-muted">View and manage all patient appointments</p>
                     </div>
                 </div>
 
-                <!-- Appointments Filters -->
+                <!-- Filter and Search -->
                 <div class="row mb-4">
-                    <div class="col-12" data-aos="fade-up" data-aos-delay="100">
-                        <div class="card shadow-sm mb-4">
-                            <div class="card-header bg-primary text-white">
-                                <h4 class="mb-0"><i class="fas fa-filter me-2"></i>Filter Appointments</h4>
-                            </div>
-                            <div class="card-body">
-                                <div class="row g-3">
+                    <div class="col-md-9 mb-3" data-aos="fade-up" data-aos-delay="100">
+                        <div class="card shadow">
+                            <div class="card-body p-3">
+                                <div class="row g-2">
                                     <div class="col-md-4">
-                                        <select class="form-select" id="statusFilter">
-                                            <option value="all" selected>All Status</option>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-light"><i class="fas fa-search"></i></span>
+                                            <input type="text" class="form-control" id="searchAppointment" placeholder="Search patient or doctor...">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <select class="form-select" id="filterStatus">
+                                            <option value="">All Status</option>
                                             <option value="pending">Pending</option>
                                             <option value="confirmed">Confirmed</option>
-                                            <option value="cancelled">Cancelled</option>
                                             <option value="completed">Completed</option>
+                                            <option value="cancelled">Cancelled</option>
                                         </select>
                                     </div>
-                                    <div class="col-md-4">
-                                        <input type="date" class="form-control" id="dateFilter">
+                                    <div class="col-md-3">
+                                        <input type="date" class="form-control" id="filterDate">
                                     </div>
-                                    <div class="col-md-4">
-                                        <button class="btn btn-primary w-100" id="applyFilters">
-                                            <i class="fas fa-search me-2"></i>Apply Filters
+                                    <div class="col-md-2">
+                                        <button class="btn btn-outline-primary w-100" id="resetFilters">
+                                            <i class="fas fa-redo-alt me-1"></i> Reset
                                         </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <div class="col-md-3 mb-3" data-aos="fade-up" data-aos-delay="100">
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <div class="card shadow text-center h-100">
+                                    <div class="card-body p-3">
+                                        <h6 class="stats-label mb-0">Total</h6>
+                                        <h3 class="stats-value m-0">{{ appointments|length }}</h3>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="card shadow text-center h-100">
+                                    <div class="card-body p-3">
+                                        <h6 class="stats-label mb-0">Pending</h6>
+                                        <h3 class="stats-value m-0">{{ appointments|selectattr('5', 'equalto', 'pending')|list|length }}</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Appointments List -->
-                <div class="row">
-                    <div class="col-12" data-aos="fade-up" data-aos-delay="200">
+                <!-- Appointments Table -->
+                <div class="row" data-aos="fade-up" data-aos-delay="200">
+                    <div class="col-12">
                         <div class="card shadow">
-                            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                                <h4 class="mb-0"><i class="fas fa-calendar-check me-2"></i>Appointments List</h4>
-                                <span class="badge bg-light text-dark fs-6">Total: {{ appointments|length }}</span>
+                            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0 text-primary"><i class="fas fa-calendar-check me-2"></i>Appointments List</h5>
                             </div>
-                            <div class="card-body">
+                            <div class="card-body p-0">
                                 <div class="table-responsive">
-                                    <table class="table table-hover">
-                                        <thead class="table-light">
+                                    <table class="table table-hover align-middle mb-0" id="appointmentsTable">
+                                        <thead>
                                             <tr>
-                                                <th>ID</th>
-                                                <th>Patient</th>
-                                                <th>Doctor</th>
-                                                <th>Date & Time</th>
-                                                <th>Status</th>
-                                                <th>Actions</th>
+                                                <th scope="col">ID</th>
+                                                <th scope="col">Patient</th>
+                                                <th scope="col">Doctor</th>
+                                                <th scope="col">Date</th>
+                                                <th scope="col">Time</th>
+                                                <th scope="col">Status</th>
+                                                <th scope="col">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {% for appointment in appointments %}
-                                            <tr>
+                                            <tr class="appointment-row"
+                                                data-patient="{{ appointment[1]|lower }}"
+                                                data-doctor="{{ appointment[2]|lower }}"
+                                                data-date="{{ appointment[3] }}"
+                                                data-status="{{ appointment[5]|lower }}">
                                                 <td>{{ appointment[0] }}</td>
                                                 <td>{{ appointment[1] }}</td>
-                                                <td>{{ appointment[2] }}</td>
-                                                <td>{{ appointment[3] }} at {{ appointment[4] }}</td>
+                                                <td>Dr. {{ appointment[2] }}</td>
+                                                <td>{{ appointment[3] }}</td>
+                                                <td>{{ appointment[4] }}</td>
                                                 <td>
-                                                    {% if appointment[5] == 'pending' %}
-                                                    <span class="badge bg-warning text-dark">Pending</span> {% elif appointment[5] == 'confirmed' %}
-                                                    <span class="badge bg-success">Confirmed</span> {% elif appointment[5] == 'cancelled' %}
-                                                    <span class="badge bg-danger">Cancelled</span> {% elif appointment[5] == 'completed' %}
-                                                    <span class="badge bg-info">Completed</span> {% endif %}
+                                                    <span class="badge rounded-pill 
+                                                    {% if appointment[5] == 'pending' %}bg-warning
+                                                    {% elif appointment[5] == 'confirmed' %}bg-success
+                                                    {% elif appointment[5] == 'completed' %}bg-info
+                                                    {% elif appointment[5] == 'cancelled' %}bg-danger
+                                                    {% else %}bg-secondary{% endif %}">
+                                                        {{ appointment[5]|capitalize }}
+                                                    </span>
                                                 </td>
                                                 <td>
-                                                    <div class="btn-group" role="group">
-                                                        <a href="{{ url_for('update_appointment_status', id=appointment[0], status='confirmed') }}" class="btn btn-success btn-sm {% if appointment[5] == 'confirmed' or appointment[5] == 'completed' %}disabled{% endif %}">
-                                                            <i class="fas fa-check"></i>
-                                                        </a>
-                                                        <a href="{{ url_for('update_appointment_status', id=appointment[0], status='cancelled') }}" class="btn btn-danger btn-sm {% if appointment[5] == 'cancelled' or appointment[5] == 'completed' %}disabled{% endif %}">
-                                                            <i class="fas fa-times"></i>
-                                                        </a>
-                                                        <a href="{{ url_for('update_appointment_status', id=appointment[0], status='completed') }}" class="btn btn-info btn-sm {% if appointment[5] == 'cancelled' or appointment[5] == 'completed' %}disabled{% endif %}">
-                                                            <i class="fas fa-check-double"></i>
-                                                        </a>
+                                                    <div class="dropdown">
+                                                        <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                            <i class="fas fa-cog me-1"></i>Actions
+                                                        </button>
+                                                        <ul class="dropdown-menu">
+                                                            <li><a class="dropdown-item" href="{{ url_for('update_appointment_status', id=appointment[0], status='confirmed') }}"><i class="fas fa-check-circle text-success me-2"></i>Confirm</a></li>
+                                                            <li><a class="dropdown-item" href="{{ url_for('update_appointment_status', id=appointment[0], status='completed') }}"><i class="fas fa-clipboard-check text-info me-2"></i>Complete</a></li>
+                                                            <li><a class="dropdown-item" href="{{ url_for('update_appointment_status', id=appointment[0], status='cancelled') }}"><i class="fas fa-times-circle text-danger me-2"></i>Cancel</a></li>
+                                                            <li><hr class="dropdown-divider"></li>
+                                                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#notifyModal{{ appointment[0] }}"><i class="fas fa-bell text-warning me-2"></i>Notify Patient</a></li>
+                                                        </ul>
                                                     </div>
                                                 </td>
                                             </tr>
+                                            
+                                            <!-- Notification Modal -->
+                                            <div class="modal fade" id="notifyModal{{ appointment[0] }}" tabindex="-1" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title"><i class="fas fa-bell me-2"></i>Notify Patient</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <form id="notifyForm{{ appointment[0] }}">
+                                                                <input type="hidden" name="user_email" value="{{ appointment[1] }}">
+                                                                <div class="mb-3">
+                                                                    <label for="messageInput{{ appointment[0] }}" class="form-label">Message</label>
+                                                                    <textarea class="form-control" id="messageInput{{ appointment[0] }}" name="message" rows="4" required
+                                                                        placeholder="Write notification message here...">Regarding your appointment with Dr. {{ appointment[2] }} on {{ appointment[3] }} at {{ appointment[4] }}...</textarea>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                            <button type="button" class="btn btn-primary send-notification" data-form="notifyForm{{ appointment[0] }}">
+                                                                <i class="fas fa-paper-plane me-1"></i>Send Notification
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
                                             {% endfor %}
                                         </tbody>
                                     </table>
                                 </div>
-                                {% if not appointments %}
-                                <div class="text-center p-4">
-                                    <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
-                                    <p class="lead text-muted">No appointments found in the system.</p>
-                                </div>
-                                {% endif %}
                             </div>
                         </div>
                     </div>
+                </div>
+                
+                <!-- No Results Message -->
+                <div id="noResults" class="text-center py-5 d-none" data-aos="fade-up" data-aos-delay="300">
+                    <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
+                    <h3 class="text-muted">No appointments found matching your search criteria</h3>
+                    <p class="text-muted">Try adjusting your search or filter options</p>
                 </div>
             </div>
         </section>
     </main>
 
     <!-- Footer -->
-    <footer class="text-white text-center py-4">
+    <footer class="py-3 mt-auto">
         <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-6 text-md-start mb-3 mb-md-0">
-                    <h5 class="mb-0"><i class="fas fa-heartbeat me-2"></i>Medify</h5>
-                    <p class="mb-0 small">Healthcare Management System</p>
-                </div>
-                <div class="col-md-6 text-md-end">
-                    <p class="mb-0 small">&copy; 2024 Medify, All Rights Reserved</p>
-                </div>
-            </div>
+            <p class="m-0 text-center text-white">&copy; 2023 Medify Hospital Management System</p>
         </div>
     </footer>
 
-    <!-- Bootstrap JS -->
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- AOS Animation Library -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
-        // Initialize AOS animations
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            once: true
+        });
+        
+        // Setup notification sending
         document.addEventListener('DOMContentLoaded', function() {
-            AOS.init({
-                duration: 800,
-                easing: 'ease-in-out',
-                once: true
+            const sendButtons = document.querySelectorAll('.send-notification');
+            
+            sendButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const formId = this.getAttribute('data-form');
+                    const form = document.getElementById(formId);
+                    const formData = new FormData(form);
+                    
+                    const data = {
+                        user_email: formData.get('user_email'),
+                        message: formData.get('message')
+                    };
+                    
+                    fetch('/send_notification', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if(data.success) {
+                            alert('Notification sent successfully!');
+                            // Close the modal
+                            const modal = bootstrap.Modal.getInstance(document.getElementById(formId.replace('notifyForm', 'notifyModal')));
+                            modal.hide();
+                        } else {
+                            alert('Error: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred while sending the notification.');
+                    });
+                });
             });
-
-            // Filter functionality
-            const statusFilter = document.getElementById('statusFilter');
-            const dateFilter = document.getElementById('dateFilter');
-            const applyFiltersBtn = document.getElementById('applyFilters');
-            const appointmentRows = document.querySelectorAll('tbody tr');
-
-            applyFiltersBtn.addEventListener('click', function() {
-                const selectedStatus = statusFilter.value;
-                const selectedDate = dateFilter.value;
-
+            
+            // Search and filter functionality
+            const searchInput = document.getElementById('searchAppointment');
+            const filterStatus = document.getElementById('filterStatus');
+            const filterDate = document.getElementById('filterDate');
+            const resetButton = document.getElementById('resetFilters');
+            const appointmentRows = document.querySelectorAll('.appointment-row');
+            const noResults = document.getElementById('noResults');
+            
+            function filterAppointments() {
+                const searchTerm = searchInput.value.toLowerCase();
+                const statusFilter = filterStatus.value.toLowerCase();
+                const dateFilter = filterDate.value;
+                
+                let visibleCount = 0;
+                
                 appointmentRows.forEach(row => {
-                    let statusMatch = true;
-                    let dateMatch = true;
-
-                    // Status filtering
-                    if (selectedStatus !== 'all') {
-                        const statusCell = row.querySelector('td:nth-child(5)');
-                        const statusText = statusCell.textContent.trim().toLowerCase();
-                        statusMatch = statusText.includes(selectedStatus.toLowerCase());
-                    }
-
-                    // Date filtering
-                    if (selectedDate) {
-                        const dateCell = row.querySelector('td:nth-child(4)');
-                        const appointmentDate = dateCell.textContent.split(' at ')[0].trim();
-                        dateMatch = appointmentDate === selectedDate;
-                    }
-
-                    // Show/hide row based on filters
-                    if (statusMatch && dateMatch) {
-                        row.style.display = '';
+                    const patientName = row.dataset.patient;
+                    const doctorName = row.dataset.doctor;
+                    const appointmentDate = row.dataset.date;
+                    const appointmentStatus = row.dataset.status;
+                    
+                    // Improved search match logic to properly handle partial string matches
+                    const matchesSearch = patientName.includes(searchTerm) || 
+                                          doctorName.includes(searchTerm);
+                    const matchesStatus = statusFilter === '' || appointmentStatus === statusFilter;
+                    const matchesDate = dateFilter === '' || appointmentDate === dateFilter;
+                    
+                    if (matchesSearch && matchesStatus && matchesDate) {
+                        row.classList.remove('d-none');
+                        visibleCount++;
                     } else {
-                        row.style.display = 'none';
+                        row.classList.add('d-none');
                     }
                 });
+                
+                // Show or hide no results message
+                if (visibleCount === 0 && (searchTerm !== '' || statusFilter !== '' || dateFilter !== '')) {
+                    noResults.classList.remove('d-none');
+                } else {
+                    noResults.classList.add('d-none');
+                }
+            }
+            
+            // Add event listeners
+            searchInput.addEventListener('input', filterAppointments);
+            filterStatus.addEventListener('change', filterAppointments);
+            filterDate.addEventListener('change', filterAppointments);
+            
+            resetButton.addEventListener('click', function() {
+                searchInput.value = '';
+                filterStatus.value = '';
+                filterDate.value = '';
+                filterAppointments();
             });
         });
     </script>
