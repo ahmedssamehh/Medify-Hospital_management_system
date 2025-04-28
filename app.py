@@ -1104,7 +1104,7 @@ def get_doctors():
         return render_template('indexuser.html', doctors=doctors)
     return redirect(url_for('login'))
 
-@app.route('/get_notifications')
+@app.route('/get_notifications') 
 def get_notifications():
     if 'user_type' in session and session['user_type'] == 'user':
         user_email = session.get('user_email')
